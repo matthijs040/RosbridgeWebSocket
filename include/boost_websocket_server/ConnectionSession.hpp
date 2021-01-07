@@ -36,7 +36,6 @@ namespace http = beast::http;           // from <boost/beast/http.hpp>
 namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
-using namespace std::placeholders;
 //------------------------------------------------------------------------------
 
 class session : public std::enable_shared_from_this<session>
@@ -44,7 +43,7 @@ class session : public std::enable_shared_from_this<session>
 
     websocket::stream<beast::tcp_stream> ws_;
     StringMessageServer* dataHandler;
-
+    std::function<void(std::string&&)> callback = std::bind(&session::do_write, this, std::placeholders::_1);
     beast::flat_buffer buffer_;
 
     void fail(beast::error_code ec, char const* what)
@@ -149,7 +148,11 @@ public:
             // Provide the write function as a callback that the handler can optionally send a response through.
             ws_.text(ws_.got_text());
 
-            dataHandler->handleRequest(beast::buffers_to_string(buffer_.data()), std::bind(&session::do_write, this, _1));
+            // https://stackoverflow.com/questions/7582546/using-generic-stdfunction-objects-with-member-functions-in-one-class
+            // using namespace std::placeholders;
+
+
+            dataHandler->handleRequest(beast::buffers_to_string(buffer_.data()), callback);
 
             // ws_.async_write(
             //     buffer_.data(),

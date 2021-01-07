@@ -48,16 +48,19 @@ class WebSocketServer
     const uint16_t port; // 32bit gives shortening compiler warning.
     const uint8_t threads;
 
+    StringMessageServer* dataHandler;
+
     public:
 
-    WebSocketServer( const std::string addr, const uint16_t port, const uint8_t threads)
+    WebSocketServer( const std::string addr, const uint16_t port, const uint8_t threads,  StringMessageServer* dataHandler)
     : address( net::ip::make_address(addr) )
     , port(port)
     , threads(std::max<int>(1, threads))
+    , dataHandler(dataHandler)
     {
         net::io_context ioc{threads};
 
-        std::make_shared<listener>(ioc, tcp::endpoint{address, port})->run();
+        std::make_shared<listener>(ioc, tcp::endpoint{address, port}, dataHandler )->run();
 
         v.reserve(threads - 1);
         // Plant a continuously running IOC run function in every thread.

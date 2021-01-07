@@ -45,6 +45,7 @@ class listener : public std::enable_shared_from_this<listener>
 {
     net::io_context& ioc_;
     tcp::acceptor acceptor_;
+    StringMessageServer* dataHandler;
 
 void fail(beast::error_code ec, char const* what)
 {
@@ -55,9 +56,11 @@ void fail(beast::error_code ec, char const* what)
 public:
     listener(
         net::io_context& ioc,
-        tcp::endpoint endpoint)
+        tcp::endpoint endpoint,
+        StringMessageServer* dataHandler = nullptr)
         : ioc_(ioc)
         , acceptor_(ioc)
+        , dataHandler(dataHandler)
     {
         beast::error_code ec;
 
@@ -124,7 +127,7 @@ private:
         else
         {
             // Create the session and run it
-            std::make_shared<session>(std::move(socket))->run();
+            std::make_shared<session>(std::move(socket), dataHandler)->run();
         }
 
         // Accept another connection

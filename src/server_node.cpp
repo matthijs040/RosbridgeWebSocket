@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include "../include/boost_websocket_server/BoostWebSocketServer.hpp"
+#include "../include/boost_websocket_server/EchoStringMessageServer.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -14,7 +15,9 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    auto wsServer = WebSocketServer( std::string(argv[1]), std::stoi(argv[2]), std::stoi(argv[3]) );
+    auto echoReponse = EchoStringMessageServer();
+
+    auto wsServer = WebSocketServer( std::string(argv[1]), std::stoi(argv[2]), std::stoi(argv[3]), &echoReponse );
 
 
     return EXIT_SUCCESS;

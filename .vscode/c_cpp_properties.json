@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/matthijs/catkin_ws/devel/include/**",
+                "/opt/ros/noetic/include/**",
+                "/home/matthijs/catkin_ws/src/ROS-assignment3/include/**",
+                "/home/matthijs/catkin_ws/src/async_web_server_cpp/include/**",
+                "/home/matthijs/catkin_ws/src/biosentry/include/**",
+                "/home/matthijs/catkin_ws/src/biosentry_ros_gazebo/include/**",
+                "/home/matthijs/catkin_ws/src/boost_websocket_server/include/**",
+                "/home/matthijs/catkin_ws/src/web_video_server/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}

@@ -4,7 +4,7 @@
 #include "StringMessageServer.hpp"
 #include "BridgeMessageSerializer.hpp"
 
-#include <functional.hpp>
+#include <functional>
 
 class BridgeMessageServer : public StringMessageServer
 {

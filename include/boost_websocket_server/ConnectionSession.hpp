@@ -41,9 +41,10 @@ using namespace std::placeholders;
 
 class session : public std::enable_shared_from_this<session>
 {
-    StringMessageServer* dataHandler;
 
     websocket::stream<beast::tcp_stream> ws_;
+    StringMessageServer* dataHandler;
+
     beast::flat_buffer buffer_;
 
     void fail(beast::error_code ec, char const* what)
@@ -118,9 +119,12 @@ public:
 
     void do_write(std::string&& data)
     {
+        auto dataBuf = buffer_.prepare(data.size());            // Get the writable part of the transmission buffer.
+        memcpy(dataBuf.data(), data.data(), dataBuf.size());    // Copy the payloiad into the writable buffer.
+        buffer_.commit(dataBuf.size());                         // Commit the written data to the transmission buffer.
 
         ws_.async_write(
-            buffer_.data(),
+            buffer_.data(),                                     // Transmit the new written payload.
             beast::bind_front_handler(
                 &session::on_write,
                 shared_from_this()));
@@ -145,27 +149,16 @@ public:
             // Provide the write function as a callback that the handler can optionally send a response through.
             ws_.text(ws_.got_text());
 
-            dataHandler->handleRequest(beast::buffers_to_string(buffer_.data()), std::bind(&session::on_response, this, _1));
+            dataHandler->handleRequest(beast::buffers_to_string(buffer_.data()), std::bind(&session::do_write, this, _1));
 
             // ws_.async_write(
             //     buffer_.data(),
             //     beast::bind_front_handler(
             //         &session::on_write,
             //         shared_from_this()));
-            }
+        }
 
 
-    }
-
-    void on_response(std::string&& reponse)
-    {
-        buffer_.
-
-        ws_.async_write(
-            buffer_.data(),
-            beast::bind_front_handler(
-                &session::on_write,
-                shared_from_this()));
     }
 
     void on_write(

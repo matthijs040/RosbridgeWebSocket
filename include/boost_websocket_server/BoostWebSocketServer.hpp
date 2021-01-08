@@ -48,11 +48,11 @@ class WebSocketServer
     const uint16_t port; // 32bit gives shortening compiler warning.
     const uint8_t threads;
 
-    StringMessageServer* dataHandler;
+    const StringMessageServer& dataHandler;
 
     public:
 
-    WebSocketServer( const std::string addr, const uint16_t port, const uint8_t threads,  StringMessageServer* dataHandler)
+    WebSocketServer( const std::string addr, const uint16_t port, const uint8_t threads,  const StringMessageServer& dataHandler)
     : address( net::ip::make_address(addr) )
     , port(port)
     , threads(std::max<int>(1, threads))

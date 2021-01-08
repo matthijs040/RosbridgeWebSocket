@@ -2,6 +2,8 @@
 #define BRIDGEMESSAGESERVER_HPP
 
 #include "StringMessageServer.hpp"
+
+#include "BridgeMessageHandler.hpp"
 #include "BridgeMessageSerializer.hpp"
 
 #include <functional>
@@ -32,7 +34,7 @@ class BridgeMessageServer : public StringMessageServer
         //
         //}
 
-        serveResponse(std::move(serializer.Serialize(message)));
+        serveResponse(std::move(serializer.Serialize( *(message.get()) ) ) );
     }
 };
 

@@ -45,7 +45,7 @@ class listener : public std::enable_shared_from_this<listener>
 {
     net::io_context& ioc_;
     tcp::acceptor acceptor_;
-    StringMessageServer& dataHandler;
+    const StringMessageServer& dataHandler;
 
 void fail(beast::error_code ec, char const* what)
 {
@@ -57,7 +57,7 @@ public:
     listener(
         net::io_context& ioc,
         tcp::endpoint endpoint,
-        StringMessageServer& dataHandler)
+        const StringMessageServer& dataHandler)
         : ioc_(ioc)
         , acceptor_(ioc)
         , dataHandler(dataHandler)

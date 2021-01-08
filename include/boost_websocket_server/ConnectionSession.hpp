@@ -42,7 +42,7 @@ class session : public std::enable_shared_from_this<session>
 {
 
     websocket::stream<beast::tcp_stream> ws_;
-    StringMessageServer& dataHandler;
+    std::unique_ptr<StringMessageServer> dataHandler;
     std::function<void(std::string&&)> callback = std::bind(&session::do_write, this, std::placeholders::_1);
     beast::flat_buffer buffer_;
 
@@ -148,8 +148,8 @@ public:
 
         // https://stackoverflow.com/questions/7582546/using-generic-stdfunction-objects-with-member-functions-in-one-class
         // using namespace std::placeholders;
-        
-        dataHandler.handleRequest(beast::buffers_to_string(buffer_.data()), callback);
+
+        dataHandler->handleRequest(beast::buffers_to_string(buffer_.data()), callback);
         // ws_.async_write(
         //     buffer_.data(),
         //     beast::bind_front_handler(

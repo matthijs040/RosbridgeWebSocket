@@ -3,7 +3,7 @@
 
 #include <string>
 #include <memory>
-
+#include "BridgeMessageHandler.hpp"
 #include "RosMessages.hpp"
 
 struct BridgeMessage
@@ -18,8 +18,7 @@ struct SetStatusLevel : public BridgeMessage
     std::string* id = nullptr;
     std::string level = "error";
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleSetStatusLevel(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Status : public BridgeMessage
@@ -29,8 +28,7 @@ struct Status : public BridgeMessage
     std::string level;
     std::string msg;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleStatus(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Authenticate : public BridgeMessage
@@ -44,8 +42,7 @@ struct Authenticate : public BridgeMessage
     std::string level;
     int end;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleAuthenticate(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 
@@ -56,8 +53,7 @@ struct Advertise : public BridgeMessage
     std::string topic;
     std::string type;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleAdvertise(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Publish : public BridgeMessage
@@ -67,8 +63,7 @@ struct Publish : public BridgeMessage
     RosMessage msg;
 
     
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandlePublish(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Subscribe : public BridgeMessage
@@ -82,8 +77,7 @@ struct Subscribe : public BridgeMessage
     int* fragment_size = nullptr;
     std::string* compression = nullptr;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleSubscribe(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Unsubscribe : public BridgeMessage
@@ -92,8 +86,7 @@ struct Unsubscribe : public BridgeMessage
     std::string* id = nullptr;
     std::string topic;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleUnsubscribe(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct CallService : public BridgeMessage
@@ -105,8 +98,7 @@ struct CallService : public BridgeMessage
     int* fragment_size = nullptr;
     std::string* compression = nullptr;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleCallService(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct AdvertiseService : public BridgeMessage
@@ -116,8 +108,7 @@ struct AdvertiseService : public BridgeMessage
     std::string service;
 
     
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleAdvertiseService(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct UnadvertiseService : public BridgeMessage
@@ -125,8 +116,7 @@ struct UnadvertiseService : public BridgeMessage
     const std::string op = "unadvertise_service";
     std::string service;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleUnadvertiseService(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct ServiceResponse : public BridgeMessage
@@ -137,12 +127,8 @@ struct ServiceResponse : public BridgeMessage
     std::string* values = nullptr; // Should be custom datatype? List<json>?
     bool result;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
-    { return handler.HandleServiceResponse(this); } 
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
-
-
-#include "BridgeMessageHandler.hpp"
 
 
 #endif

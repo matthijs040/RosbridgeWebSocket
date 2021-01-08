@@ -17,8 +17,11 @@ int main(int argc, char *argv[])
 
     auto echoReponse = EchoStringMessageServer();
 
-    auto wsServer = WebSocketServer( std::string(argv[1]), std::stoi(argv[2]), std::stoi(argv[3]), echoReponse );
+    auto wsServer = BoostWebSocketServer( std::string(argv[1]), std::stoi(argv[2]), std::stoi(argv[3]), echoReponse );
 
-
+    while(ros::ok())
+    {
+        
+    }
     return EXIT_SUCCESS;
 }

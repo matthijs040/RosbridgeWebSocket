@@ -37,6 +37,7 @@ class BoostWebSocketClient
     // Connect to the server specifications the server was constructed with. 
     void connect(const std::string& address,const std::string& port, const std::string& client_name = "websocket-client")
     {
+
         // Look up the domain name
         auto results = resolver.resolve(address, port);
 

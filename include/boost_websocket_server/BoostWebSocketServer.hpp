@@ -13,8 +13,8 @@
 //
 //------------------------------------------------------------------------------
 
-#ifndef WEBSOCKETSERVER_HPP
-#define WEBSOCKETSERVER_HPP
+#ifndef BOOSTWEBSOCKETSERVER_HPP
+#define BOOSTWEBSOCKETSERVER_HPP
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/websocket.hpp>
@@ -39,7 +39,7 @@ using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 
 //------------------------------------------------------------------------------
 
-class WebSocketServer
+class BoostWebSocketServer
 {
     //list of threads that contain the IOC runtimes.
     std::vector<std::thread> v;
@@ -52,7 +52,7 @@ class WebSocketServer
 
     public:
 
-    WebSocketServer( const std::string addr, const uint16_t port, const uint8_t threads,  const StringMessageServer& dataHandler)
+    BoostWebSocketServer( const std::string addr, const uint16_t port, const uint8_t threads,  const StringMessageServer& dataHandler)
     : address( net::ip::make_address(addr) )
     , port(port)
     , threads(std::max<int>(1, threads))
@@ -62,7 +62,7 @@ class WebSocketServer
 
         std::make_shared<listener>(ioc, tcp::endpoint{address, port}, dataHandler )->run();
 
-        v.reserve(threads - 1);
+        v.reserve(threads);
         // Plant a continuously running IOC run function in every thread.
         for(auto i = threads - 1; i > 0; --i)
             v.emplace_back(
@@ -70,13 +70,8 @@ class WebSocketServer
             {
                 ioc.run();
             });
-        ioc.run();
-    }
-
-    bool send(std::string data)
-    {
-        return false;
+        //ioc.run(); Do not block the thread that was used to construct the application.
     }
 };
 
-#endif //WEBSOCKETSERVER_HPP
+#endif //BoostWEBSOCKETSERVER_HPP

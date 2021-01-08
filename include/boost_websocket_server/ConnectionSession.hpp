@@ -42,7 +42,7 @@ class session : public std::enable_shared_from_this<session>
 {
 
     websocket::stream<beast::tcp_stream> ws_;
-    StringMessageServer* dataHandler;
+    StringMessageServer& dataHandler;
     std::function<void(std::string&&)> callback = std::bind(&session::do_write, this, std::placeholders::_1);
     beast::flat_buffer buffer_;
 
@@ -55,9 +55,9 @@ class session : public std::enable_shared_from_this<session>
 public:
     // Take ownership of the socket
     // Can optionally take a datahandler object to forward received payloads and callback function to.
-    explicit session(tcp::socket&& socket, StringMessageServer* dataHandler = nullptr)
+    explicit session(tcp::socket&& socket, const StringMessageServer& dataHandler)
         : ws_(std::move(socket))
-        , dataHandler(dataHandler)
+        , dataHandler( dataHandler.copy() )
     {
     }
 
@@ -142,24 +142,20 @@ public:
         if(ec)
             fail(ec, "read");
 
-        if(dataHandler)
-        {
-            // Use the datahandler to send read bytes as string to.
-            // Provide the write function as a callback that the handler can optionally send a response through.
-            ws_.text(ws_.got_text());
+        // Use the datahandler to send read bytes as string to.
+        // Provide the write function as a callback that the handler can optionally send a response through.
+        ws_.text(ws_.got_text());
 
-            // https://stackoverflow.com/questions/7582546/using-generic-stdfunction-objects-with-member-functions-in-one-class
-            // using namespace std::placeholders;
-
-
-            dataHandler->handleRequest(beast::buffers_to_string(buffer_.data()), callback);
-
-            // ws_.async_write(
-            //     buffer_.data(),
-            //     beast::bind_front_handler(
-            //         &session::on_write,
-            //         shared_from_this()));
-        }
+        // https://stackoverflow.com/questions/7582546/using-generic-stdfunction-objects-with-member-functions-in-one-class
+        // using namespace std::placeholders;
+        
+        dataHandler.handleRequest(beast::buffers_to_string(buffer_.data()), callback);
+        // ws_.async_write(
+        //     buffer_.data(),
+        //     beast::bind_front_handler(
+        //         &session::on_write,
+        //         shared_from_this()));
+        
 
 
     }

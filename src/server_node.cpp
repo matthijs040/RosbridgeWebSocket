@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
     auto echoReponse = EchoStringMessageServer();
 
-    auto wsServer = WebSocketServer( std::string(argv[1]), std::stoi(argv[2]), std::stoi(argv[3]), &echoReponse );
+    auto wsServer = WebSocketServer( std::string(argv[1]), std::stoi(argv[2]), std::stoi(argv[3]), echoReponse );
 
 
     return EXIT_SUCCESS;

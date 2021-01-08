@@ -6,6 +6,7 @@
 
 #include <functional>
 
+
 class BridgeMessageServer : public StringMessageServer
 {
     private:
@@ -24,6 +25,12 @@ class BridgeMessageServer : public StringMessageServer
     void handleRequest(const std::string& request, const std::function<void(const std::string&&)>& serveResponse )
     {
         auto message = serializer.Deserialize(request);
+        
+        //// CHANGE TO VISITOR PATTERN
+        //if(dynamic_cast<Advertise*>(&message))
+        //{
+        //
+        //}
 
         serveResponse(std::move(serializer.Serialize(message)));
     }

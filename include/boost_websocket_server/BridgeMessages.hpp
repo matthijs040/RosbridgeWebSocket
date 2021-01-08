@@ -2,105 +2,147 @@
 #define BRIDGEMESSAGES_HPP
 
 #include <string>
+#include <memory>
+
 #include "RosMessages.hpp"
 
 struct BridgeMessage
 {
     const std::string op;
+    virtual std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler) = 0;
 };
 
 struct SetStatusLevel : public BridgeMessage
 {
     const std::string op = "set_level";
-    const std::string* id = nullptr;
-    const std::string level = "error";
+    std::string* id = nullptr;
+    std::string level = "error";
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleSetStatusLevel(this); } 
 };
 
 struct Status : public BridgeMessage
 {
     const std::string op = "status";
-    const std::string* id = nullptr;
-    const std::string level;
-    const std::string msg;
+    std::string* id = nullptr;
+    std::string level;
+    std::string msg;
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleStatus(this); } 
 };
 
 struct Authenticate : public BridgeMessage
 {
     const std::string op = "auth";
-    const std::string mac;
-    const std::string client;
-    const std::string dest;
-    const std::string rand;
-    const int t;
-    const std::string level;
-    const int end;
+    std::string mac;
+    std::string client;
+    std::string dest;
+    std::string rand;
+    int t;
+    std::string level;
+    int end;
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleAuthenticate(this); } 
 };
 
 
 struct Advertise : public BridgeMessage
 {
     const std::string op = "advertise";
-    const std::string* id = nullptr;
-    const std::string topic;
-    const std::string type;
+    std::string* id = nullptr;
+    std::string topic;
+    std::string type;
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleAdvertise(this); } 
 };
 
 struct Publish : public BridgeMessage
 {
     const std::string op = "publish";
-    const std::string topic;
-    const RosMessage msg;
+    std::string topic;
+    RosMessage msg;
+
+    
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandlePublish(this); } 
 };
 
 struct Subscribe : public BridgeMessage
 {
-    const std::string  op = "subscribe";
-    const std::string* id = nullptr;
-    const std::string topic;
-    const std::string* type = nullptr;
-    const int* throttle_rate = nullptr;
-    const int* queue_length = nullptr;
-    const int* fragment_size = nullptr;
-    const std::string* compression = nullptr;
+    std::string  op = "subscribe";
+    std::string* id = nullptr;
+    std::string topic;
+    std::string* type = nullptr;
+    int* throttle_rate = nullptr;
+    int* queue_length = nullptr;
+    int* fragment_size = nullptr;
+    std::string* compression = nullptr;
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleSubscribe(this); } 
 };
 
 struct Unsubscribe : public BridgeMessage
 {
     const std::string op = "unsubscribe";
-    const std::string* id = nullptr;
-    const std::string topic;
+    std::string* id = nullptr;
+    std::string topic;
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleUnsubscribe(this); } 
 };
 
 struct CallService : public BridgeMessage
 {
     const std::string op = "call_service";
-    const std::string* id = nullptr;
-    const std::string service;
-    const std::string* args = nullptr; // Should be custom datatype? List<json>?
-    const int* fragment_size = nullptr;
-    const std::string* compression = nullptr;
+    std::string* id = nullptr;
+    std::string service;
+    std::string* args = nullptr; // Should be custom datatype? List<json>?
+    int* fragment_size = nullptr;
+    std::string* compression = nullptr;
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleCallService(this); } 
 };
 
 struct AdvertiseService : public BridgeMessage
 {
     const std::string op = "advertise_service";
-    const std::string type;
-    const std::string service;
+    std::string type;
+    std::string service;
+
+    
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleAdvertiseService(this); } 
 };
 
 struct UnadvertiseService : public BridgeMessage
 {
     const std::string op = "unadvertise_service";
-    const std::string service;
+    std::string service;
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleUnadvertiseService(this); } 
 };
 
 struct ServiceResponse : public BridgeMessage
 {
     const std::string op = "service_response";
-    const std::string* id = nullptr;
-    const std::string service;
-    const std::string* values = nullptr; // Should be custom datatype? List<json>?
-    const bool result;
+    std::string* id = nullptr;
+    std::string service;
+    std::string* values = nullptr; // Should be custom datatype? List<json>?
+    bool result;
+
+    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
+    { return handler.HandleServiceResponse(this); } 
 };
+
+
+#include "BridgeMessageHandler.hpp"
+
 
 #endif

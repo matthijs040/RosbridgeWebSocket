@@ -2,6 +2,7 @@
 #define ECHOSTRINGMESSAGESERVER_HPP
 
 #include "StringMessageServer.hpp"
+#include <memory>
 
 /**
  * @brief minimal implementation of the StringMessageServer interface.
@@ -17,6 +18,12 @@ public:
     virtual void handleRequest(std::string&& request, const std::function<void(std::string&&)>& serveResponse )
     {
         serveResponse(std::move(request));
+    }
+
+    virtual std::unique_ptr<StringMessageServer> copy() const
+    {
+        auto ret = EchoStringMessageServer();
+        return std::make_unique<EchoStringMessageServer>(ret);
     }
 };
 

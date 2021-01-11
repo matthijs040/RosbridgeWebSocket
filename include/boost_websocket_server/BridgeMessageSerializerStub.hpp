@@ -12,12 +12,12 @@ class BridgeMessageSerializerStub : public BridgeMessageSerializer
 private:
     /* data */
 public:
-    BridgeMessageSerializerStub(/* args */) {}
-    ~BridgeMessageSerializerStub() {}
+    BridgeMessageSerializerStub() = default;
+    ~BridgeMessageSerializerStub() = default;
 
     virtual std::string Serialize(const BridgeMessage& data)
     {
-                return std::string("using the stub.");
+        return std::string("using the stub.");
     }
 
     virtual std::unique_ptr<BridgeMessage> Deserialize(const std::string& data)

@@ -1,10 +1,12 @@
 #ifndef BRIDGEMESSAGES_HPP
 #define BRIDGEMESSAGES_HPP
 
-#include <string>
-#include <memory>
-#include "BridgeMessageHandler.hpp"
-#include "RosMessages.hpp"
+#include <string>                   // std::string
+#include <memory>                   // std::unique_ptr.
+#include "BridgeMessageHandler.hpp" // BridgeMessageHandler&
+#include "RosMessages.hpp"          // Supported RosMessage payload. (Could be made templated / generic?)
+
+namespace BridgeMessages{
 
 struct BridgeMessage
 {
@@ -128,6 +130,8 @@ struct ServiceResponse : public BridgeMessage
     bool result;
 
     std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
+};
+
 };
 
 

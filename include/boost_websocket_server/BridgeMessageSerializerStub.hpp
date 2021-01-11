@@ -2,6 +2,10 @@
 #define BRIDGEMESSAGESERIALIZERSTUB_HPP
 
 #include "BridgeMessageSerializer.hpp"
+#include "json.hpp"
+
+using namespace BridgeMessages;
+
 
 class BridgeMessageSerializerStub : public BridgeMessageSerializer
 {
@@ -13,7 +17,7 @@ public:
 
     virtual std::string Serialize(const BridgeMessage& data)
     {
-        return std::string("using the stub.");
+                return std::string("using the stub.");
     }
 
     virtual std::unique_ptr<BridgeMessage> Deserialize(const std::string& data)

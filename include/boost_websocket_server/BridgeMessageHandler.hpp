@@ -1,86 +1,32 @@
 #ifndef BRIDGEMESSAGEHANDLER_HPP
 #define BRIDGEMESSAGEHANDLER_HPP
 
-class BridgeMessageHandler;
+class BridgeMessageHandler;     // Declaration required by BridgeMessages.
 
-// Include each-other? Problem?
-#include "BridgeMessages.hpp"
-#include <memory>
+#include "BridgeMessages.hpp"   // The messages of the Bridge-Protocol
+#include <memory>               // std::unique_ptr
 
+using namespace BridgeMessages;
+
+/**
+ * @brief Interface that specifies the functions required to handle the output of a BridgeMessageServer.
+ * This is an implementation of the Visitor pattern where this handler is the visitor.
+ * looking at a message and acts according to its data.
+ */
 class BridgeMessageHandler
 {
-private:
-    /* data */
 public:
-    BridgeMessageHandler(/* args */) {}
-    ~BridgeMessageHandler() {}
-
-    std::unique_ptr<BridgeMessage> HandleSetStatusLevel(const SetStatusLevel* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleStatus(const Status* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleAuthenticate(const Authenticate* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleAdvertise(const Advertise* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandlePublish(const Publish* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleSubscribe(const Subscribe* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleUnsubscribe(const Unsubscribe* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleCallService(const CallService* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleAdvertiseService(const AdvertiseService* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleUnadvertiseService(const UnadvertiseService* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-
-    std::unique_ptr<BridgeMessage> HandleServiceResponse(const ServiceResponse* message)
-    {
-        auto ret = SetStatusLevel();
-        return std::make_unique<SetStatusLevel>(ret); 
-    }
-    
+    virtual std::unique_ptr<BridgeMessage> HandleSetStatusLevel     (const SetStatusLevel&      message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleStatus             (const Status&              message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleAuthenticate       (const Authenticate&        message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleAdvertise          (const Advertise&           message) = 0; 
+    virtual std::unique_ptr<BridgeMessage> HandlePublish            (const Publish&             message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleSubscribe          (const Subscribe&           message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleUnsubscribe        (const Unsubscribe&         message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleCallService        (const CallService&         message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleAdvertiseService   (const AdvertiseService&    message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleUnadvertiseService (const UnadvertiseService&  message) = 0;
+    virtual std::unique_ptr<BridgeMessage> HandleServiceResponse    (const ServiceResponse&     message) = 0;
 };
 
 #endif // BRIDGEMESSAGEHANDLER_HPP

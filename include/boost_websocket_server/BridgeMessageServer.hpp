@@ -28,11 +28,7 @@ class BridgeMessageServer : public StringMessageServer
     {
         auto message = serializer.Deserialize(request);
         
-        //// CHANGE TO VISITOR PATTERN
-        //if(dynamic_cast<Advertise*>(&message))
-        //{
-        //
-        //}
+        
 
         serveResponse(std::move(serializer.Serialize( *(message.get()) ) ) );
     }

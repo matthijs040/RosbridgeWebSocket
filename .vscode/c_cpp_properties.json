@@ -14,7 +14,8 @@
                 "/home/matthijs/catkin_ws/src/biosentry_ros_gazebo/include/**",
                 "/home/matthijs/catkin_ws/src/boost_websocket_server/include/**",
                 "/home/matthijs/catkin_ws/src/web_video_server/include/**",
-                "/usr/include/**"
+                "/usr/include/**",
+                "/home/matthijs/libs/boost_1_75_0/**"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",

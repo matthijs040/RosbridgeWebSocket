@@ -3,6 +3,8 @@
 // Implementation of the 'visit' functions for the bridgeMessages.
 // NOTE that this cannot be placed inside the header as using the required forward declaration is a compiler error. 
 
+namespace BridgeMessages{
+
 struct SetStatusLevel : public BridgeMessage
 {
     std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
@@ -67,4 +69,6 @@ struct ServiceResponse : public BridgeMessage
 {
     std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
     { return handler.HandleServiceResponse(*this); } 
+};
+
 };

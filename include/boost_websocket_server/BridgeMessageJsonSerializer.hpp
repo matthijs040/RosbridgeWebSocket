@@ -3,75 +3,65 @@
 
 #include "BridgeMessageSerializer.hpp"  // Interface to implement.
 #include "BridgeMessages.hpp"           // Messages to parse.
+#include <boost/json.hpp>
 
-#include <json/json.h>
+// https://www.boost.org/doc/libs/develop/libs/json/doc/html/json/quick_look.html#json.quick_look.value_conversion
+// Function overloads for serializing the BridgeMessage types with boost::json.
 
-#include "json.hpp"                     // json parser, single header release: https://github.com/nlohmann/json
-using nlohmann::json;   
+using namespace boost::json;
 
-template<typename T>
-T* tryAt_optional_value(const json& j, const std::string name)
-{
-    try
+namespace BridgeMessages {
+
+    // from: https://www.boost.org/doc/libs/develop/libs/json/doc/html/json/quick_look.html#json.quick_look.value_conversion
+    // This helper function deduces the type and assigns the value with the matching key
+    template<class T>
+    void extract( object const& obj, T& t, string_view key )
     {
-        j.at(name);
-
-        auto val = new T();
-        j.at(name).get_to(val);
-        return val;
-    }
-    catch(const std::out_of_range& e) 
-    {
-        return nullptr;
-    }
-    
-}
-
-// method used: https://github.com/nlohmann/json#basic-usage
-namespace BridgeMessages 
-{
-    void to_json( json& j, const SetStatusLevel& m) 
-    {
-        // Using ternary operator for conditional assignment of optionally initialized/used parameters.
-        // https://www.tutorialspoint.com/c-cplusplus-ternary-operator
-        j = json{{"op", m.op}, {"id", m.id ? *m.id : "NULL" }, {"level", m.level} };
-
+        t = value_to<T>( obj.at( key ) );
     }
 
-    void from_json(const json& j, SetStatusLevel& m)
+    SetStatusLevel tag_invoke( value_to_tag< SetStatusLevel >, const value& v )
     {
-        // Check if ID exists.
-        m.id = tryAt_optional_value<std::string>(j, "id");
-        j.at("level").get_to(m.level);
+        SetStatusLevel ret;
+        const object& obj = v.as_object();
+        extract( obj, ret.op, "op" );
+        extract( obj, ret.level, "level" );
+        extract( obj, ret.id, "id" ); // NOTE: Assumes that library handles pointers as optional params.
+
+        return ret;
+    }
+
+
+    void tag_invoke( value_from_tag, value& v, const SetStatusLevel& m )
+    {
+        v = {
+            { "op", m.op },
+            { "level", m.level },
+            { "id", m.id}
+        };  
     }
 };
-
 
 class BridgeMessageJsonSerializer : public BridgeMessageSerializer
 {
 private:
-    /* data */
+    
 public:
     BridgeMessageJsonSerializer(/* args */) {}
     ~BridgeMessageJsonSerializer() {}
 
-    /**
-     * @brief Serializes a given datatype that has to be of subset BridgeMessages
-     * 
-     * @tparam BridgeMessage 
-     * @param message 
-     * @return std::string 
-     */
-    template<typename BridgeMessage>
-    std::string Serialize(BridgeMessage& message)
+    // virtual std::string Serialize(const BridgeMessage& data) = 0;
+    // virtual std::unique_ptr<BridgeMessage> Deserialize(const std::string& data) = 0;
+
+    virtual std::string Serialize(const BridgeMessage& message)
     {
-        return json(message).dump();
+        return serialize( value_from(message) );
     }
 
     
-    std::unique_ptr<BridgeMessage> Deserialize(std::string data)
+    virtual std::unique_ptr<BridgeMessage> Deserialize(const std::string& data)
     {
-        from_json(json(data), data);
+        return std::make_unique( value_to<BridgeMessage>( parse(data) ) );
     }
 };
 

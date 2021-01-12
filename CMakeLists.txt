@@ -115,7 +115,8 @@ CATKIN_DEPENDS roscpp std_msgs
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
+  /home/matthijs/libs/boost_1_75_0/
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -137,6 +138,9 @@ target_link_libraries(${PROJECT_NAME}_server_node ${catkin_LIBRARIES} )
 
 add_executable(${PROJECT_NAME}_client_node src/client_node.cpp)
 target_link_libraries(${PROJECT_NAME}_client_node ${catkin_LIBRARIES} )
+
+add_executable(test_serializer test/test_serializer.cpp)
+target_link_libraries(test_serializer ${catkin_LIBRARIES} )
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

@@ -116,6 +116,7 @@ CATKIN_DEPENDS roscpp std_msgs
 ## Your package locations should be listed before other locations
 include_directories(
   include
+  /home/matthijs/catkin_ws/src/boost_websocket_server/include/
   /home/matthijs/libs/boost_1_75_0/
   ${catkin_INCLUDE_DIRS}
 )

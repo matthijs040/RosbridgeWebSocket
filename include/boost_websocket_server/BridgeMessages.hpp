@@ -6,8 +6,6 @@
 #include "BridgeMessageHandler.hpp" // BridgeMessageHandler&
 #include "RosMessages.hpp"          // Supported RosMessage payload. (Could be made templated / generic?)
 
-namespace BridgeMessages{
-
 struct BridgeMessage
 {
     const std::string op;
@@ -130,7 +128,6 @@ struct ServiceResponse : public BridgeMessage
     std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
-};
 
 
 #endif

@@ -10,8 +10,6 @@
 
 using namespace boost::json;
 
-namespace BridgeMessages {
-
     // from: https://www.boost.org/doc/libs/develop/libs/json/doc/html/json/quick_look.html#json.quick_look.value_conversion
     // This helper function deduces the type and assigns the value with the matching key
     template<class T>
@@ -40,7 +38,7 @@ namespace BridgeMessages {
             { "id", m.id}
         };  
     }
-};
+
 
 class BridgeMessageJsonSerializer : public BridgeMessageSerializer
 {

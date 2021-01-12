@@ -3,8 +3,22 @@
 
 class BridgeMessageHandler;     // Declaration required by BridgeMessages.
 
-#include "BridgeMessages.hpp"   // The messages of the Bridge-Protocol
+struct BridgeMessage; // Temporary declarations required by BridgeMessageHandler.
+struct SetStatusLevel;
+struct Status;
+struct Authenticate;
+struct Advertise;
+struct Publish;
+struct Subscribe;
+struct Unsubscribe;
+struct CallService;
+struct AdvertiseService;
+struct UnadvertiseService;
+struct ServiceResponse;
+
 #include <memory>               // std::unique_ptr
+#include "BridgeMessages.hpp"   // The messages of the Bridge-Protocol
+
 
 /**
  * @brief Interface that specifies the functions required to handle the output of a BridgeMessageServer.
@@ -14,17 +28,17 @@ class BridgeMessageHandler;     // Declaration required by BridgeMessages.
 class BridgeMessageHandler
 {
 public:
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleSetStatusLevel     (const BridgeMessages::SetStatusLevel&      message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleStatus             (const BridgeMessages::Status&              message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleAuthenticate       (const BridgeMessages::Authenticate&        message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleAdvertise          (const BridgeMessages::Advertise&           message) = 0; 
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandlePublish            (const BridgeMessages::Publish&             message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleSubscribe          (const BridgeMessages::Subscribe&           message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleUnsubscribe        (const BridgeMessages::Unsubscribe&         message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleCallService        (const BridgeMessages::CallService&         message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleAdvertiseService   (const BridgeMessages::AdvertiseService&    message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleUnadvertiseService (const BridgeMessages::UnadvertiseService&  message) = 0;
-    virtual std::unique_ptr< BridgeMessages::BridgeMessage > HandleServiceResponse    (const BridgeMessages::ServiceResponse&     message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleSetStatusLevel     (const SetStatusLevel&      message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleStatus             (const Status&              message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleAuthenticate       (const Authenticate&        message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleAdvertise          (const Advertise&           message) = 0; 
+    virtual std::unique_ptr< BridgeMessage > HandlePublish            (const Publish&             message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleSubscribe          (const Subscribe&           message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleUnsubscribe        (const Unsubscribe&         message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleCallService        (const CallService&         message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleAdvertiseService   (const AdvertiseService&    message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleUnadvertiseService (const UnadvertiseService&  message) = 0;
+    virtual std::unique_ptr< BridgeMessage > HandleServiceResponse    (const ServiceResponse&     message) = 0;
 };
 
 #endif // BRIDGEMESSAGEHANDLER_HPP

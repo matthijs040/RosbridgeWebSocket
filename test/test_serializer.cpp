@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-using namespace BridgeMessages;
 
 int main(int argc, char const *argv[])
 {

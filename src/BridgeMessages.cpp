@@ -6,7 +6,7 @@
 
 struct SetStatusLevel::SetStatusLevel : public BridgeMessage
 {    
-    virtual std::unique_ptr<BridgeMessage> SetStatusLevel::getHandled(BridgeMessageHandler& handler)
+    std::unique_ptr<BridgeMessage> SetStatusLevel::getHandled(BridgeMessageHandler& handler) override
     { return handler.HandleSetStatusLevel(*this); } 
 };
 
@@ -20,7 +20,6 @@ struct Authenticate::Authenticate : public BridgeMessage
     std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler)
     { return handler.HandleAuthenticate(*this); } 
 };
-
 
 struct Advertise::Advertise : public BridgeMessage
 {

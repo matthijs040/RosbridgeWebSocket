@@ -8,30 +8,26 @@
 
 namespace BridgeMessages {
 
-class BridgeMessage
+struct BridgeMessage
 {
-    public:
-
     const std::string op;
-    virtual ~BridgeMessage() = default;
+    virtual ~BridgeMessage() {};
     virtual std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler) = 0;
 };
 
-class SetStatusLevel : public BridgeMessage
+struct SetStatusLevel : public BridgeMessage
 {
-    public:
     const std::string op = "set_level";
     std::unique_ptr<std::string> id = nullptr;
     std::string level = "error";
 
     SetStatusLevel() {}; 
-    SetStatusLevel(const SetStatusLevel& copy)
-    : id( copy.id.get() ? std::make_unique<std::string>( *(copy.id.get()) ) : nullptr )
-    , level(copy.level)
+    SetStatusLevel(const SetStatusLevel& og) 
+    : id( og.id.get() ? std::make_unique<std::string>( *(og.id.get()) ) : nullptr )
+    , level(og.level)
     {}
 
     virtual ~SetStatusLevel() {};
-
     virtual std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 

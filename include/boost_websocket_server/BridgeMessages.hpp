@@ -32,7 +32,7 @@ struct SetStatusLevel : public BridgeMessage
 struct Status : public BridgeMessage
 {
     const std::string op = "status";
-    std::string* id = nullptr;
+    std::unique_ptr<std::string> id = nullptr;
     std::string level = std::string();
     std::string msg = std::string();
 

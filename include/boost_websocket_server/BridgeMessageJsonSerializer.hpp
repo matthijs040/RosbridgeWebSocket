@@ -28,10 +28,78 @@ void tag_invoke( value_from_tag, value& v, const SetStatusLevel& m )
 {
     v = {
         { "op", m.op },
-        { "id", m.id ? *(m.id) : "nullptr" },
+        { "id", m.id ? *(m.id) : "" },
         { "level", m.level }
     };  
 }
+
+void tag_invoke( value_from_tag, value& v, const Status& m)
+{
+    v = {
+        { "op", m.op },
+        { "id", m.id ? *(m.id) : "" },
+        { "level", m.level },
+        { "msg", m.msg },
+    };
+}
+
+void tag_invoke( value_from_tag, value& v, const Authenticate& m)
+{
+    v = {
+        { "op", m.op },
+        { "mac", m.mac},
+        { "client", m.client},
+        { "dest",  m.dest},
+        { "rand", m.rand},
+        { "t", m.t},
+        { "level", m.level},
+        { "end", m.end}
+    };
+}
+
+void tag_invoke( value_from_tag, value& v, const Advertise& m)
+{
+    v = {
+        { "op", m.op },
+        { "id", m.id ? *(m.id) : "" },
+        { "topic", m.topic},
+        { "type", m.type}
+    };
+}
+
+void tag_invoke( value_from_tag, value& v, const Unadvertise& m)
+{
+    v = {
+        { "op", m.op },
+        { "id", m.id ? *(m.id) : "" },
+        { "topic", m.topic}
+    };
+}
+
+
+void tag_invoke( value_from_tag, value& v, const Publish& m)
+{
+    v = {
+        { "op", m.op },
+        { "topic", m.topic},
+        { "msg", m.msg ? *m.msg : "" } //placeholder
+    };
+}
+
+
+void tag_invoke( value_from_tag, value& v, const Subscribe& m)
+{
+    v = {
+        { "op", m.op },
+        { "id", m.id ? *(m.id) : "" },
+        { "topic", m.topic},
+        { "msg", m.type ? *m.type : "" },
+        { }
+    };
+}
+
+
+
 
 void tag_invoke(value_from_tag t, value& v, const BridgeMessage& base)
 {

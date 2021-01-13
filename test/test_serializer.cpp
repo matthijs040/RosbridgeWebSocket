@@ -13,34 +13,64 @@ namespace SerializerTest
 
     BridgeMessageJsonSerializer serializer = BridgeMessageJsonSerializer();
 
-    // test
-    bool serialization_preserves_keyvalue_pair(const BridgeMessage& message, const std::string& key, const std::string& value)
+    /**
+     * @brief Utility function that tells if a given JSON key-value-pair is contained within a given string. 
+     * 
+     * @param data as a json serialized string.
+     * @param key of the json field.
+     * @param value of the json field. 
+     * @return true if the key-value are in the string in json format.
+     * @return false otherwise
+     */
+    bool contains_keyvalue_pair(const std::string& data, const std::string& key, const std::string& value)
     {
-        auto data = serializer.Serialize(message);
         return data.find("\"" + key + "\":\"" + value +"\"") != std::string::npos;
     }
 
-    void can_serialize_SetStatusLevel()
+    bool contains(const std::string& data, const std::string& contains)
+    {
+        return data.find(contains) != std::string::npos;
+    }
+
+    void SetStatusLevel_serialized_preserving_all_fields()
     {
         // Given:
         auto message = SetStatusLevel();
         message.level = "error";
         message.id = std::make_unique<std::string>("id:10");
 
+        // When:
+        auto data = serializer.Serialize(message);
+
         // Then:
-        assert(serialization_preserves_keyvalue_pair(message, "op", message.op));
-        assert(serialization_preserves_keyvalue_pair(message, "level", message.level));
-        assert(serialization_preserves_keyvalue_pair(message, "id", *message.id));
+        assert(contains_keyvalue_pair(data, "op", message.op));
+        assert(contains_keyvalue_pair(data, "level", message.level));
+        assert(contains_keyvalue_pair(data, "id", *message.id));
     }
 
-    void can_serialize_Status()
+    void optional_field_serialized_as_empty()
+    {
+        auto message = Status();
+        message.id = nullptr;
+
+        auto data = serializer.Serialize(message);
+        std::cout << data << '\n';
+        assert(contains(data, "id"));
+    }
+
+    void Status_serialized_preserving_all_fields()
     {
         auto message = Status();
         message.level = "error";
-        message.id = new std::string("id:1");
+        message.id = std::make_unique<std::string>("id:1");
         message.msg = std::string("some message");
+
+        auto data = serializer.Serialize(message);
         
-        assert(serialization_preserves_keyvalue_pair(message, "op", message.op) );
+        assert(contains_keyvalue_pair(data, "op", message.op) );
+        assert(contains_keyvalue_pair(data, "level", message.level) );
+        assert(contains_keyvalue_pair(data, "id", *message.id) );
+        assert(contains_keyvalue_pair(data, "msg", message.msg) );
     }
 
 
@@ -49,8 +79,9 @@ namespace SerializerTest
 
 int main(int argc, char const *argv[])
 {
-    SerializerTest::can_serialize_SetStatusLevel();
-    SerializerTest::can_serialize_Status();
+    SerializerTest::SetStatusLevel_serialized_preserving_all_fields();
+    SerializerTest::Status_serialized_preserving_all_fields();
+    SerializerTest::optional_field_serialized_as_empty();
 
 
     return EXIT_SUCCESS;

@@ -35,9 +35,9 @@ void tag_invoke( value_from_tag, value& v, const SetStatusLevel& m )
 void tag_invoke(value_from_tag, value& v, const BridgeMessage& m)
 {
     
-    if(std::strcmp(m.op.c_str(), "set_level") == 0)
+    if(auto message = dynamic_cast<const SetStatusLevel*>(&m))
     { 
-        tag_invoke(value_from_tag(), v, dynamic_cast<const SetStatusLevel&>(m)); 
+        tag_invoke(value_from_tag(), v, *message); 
     }
     else
     {

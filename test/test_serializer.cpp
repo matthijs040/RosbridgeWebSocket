@@ -9,6 +9,7 @@ int main(int argc, char const *argv[])
 {
     auto serializer = BridgeMessageJsonSerializer();
     auto message = SetStatusLevel();
+    message.id = std::make_unique<std::string>("id:10");
 
     std::cout << serializer.Serialize(message) << "\n";
 

@@ -3,7 +3,7 @@
 
 #include <string>                   // std::string
 #include <memory>                   // std::unique_ptr.
-#include "BridgeMessageHandler.hpp" // BridgeMessageHandler&
+// #include "BridgeMessageHandler.hpp" // BridgeMessageHandler&
 #include "RosMessages.hpp"          // Supported RosMessage payload. (Could be made templated / generic?)
 
 namespace BridgeMessages {
@@ -12,7 +12,6 @@ struct BridgeMessage
 {
     const std::string op;
     virtual ~BridgeMessage() {};
-    virtual std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler) = 0;
 };
 
 struct SetStatusLevel : public BridgeMessage
@@ -28,7 +27,6 @@ struct SetStatusLevel : public BridgeMessage
     {}
 
     virtual ~SetStatusLevel() {};
-    virtual std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Status : public BridgeMessage
@@ -38,7 +36,6 @@ struct Status : public BridgeMessage
     std::string level = std::string();
     std::string msg = std::string();
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Authenticate : public BridgeMessage
@@ -52,7 +49,6 @@ struct Authenticate : public BridgeMessage
     std::string level = std::string();
     int end = 0;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Advertise : public BridgeMessage
@@ -62,7 +58,6 @@ struct Advertise : public BridgeMessage
     std::string topic = std::string();
     std::string type = std::string();
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Publish : public BridgeMessage
@@ -71,7 +66,6 @@ struct Publish : public BridgeMessage
     std::string topic = std::string();
     RosMessage* msg = nullptr;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Subscribe : public BridgeMessage
@@ -85,7 +79,6 @@ struct Subscribe : public BridgeMessage
     int* fragment_size = nullptr;
     std::string* compression = nullptr;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Unsubscribe : public BridgeMessage
@@ -94,7 +87,6 @@ struct Unsubscribe : public BridgeMessage
     std::string* id = nullptr;
     std::string topic = std::string();
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct CallService : public BridgeMessage
@@ -106,7 +98,6 @@ struct CallService : public BridgeMessage
     int* fragment_size = nullptr;
     std::string* compression = nullptr;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct AdvertiseService : public BridgeMessage
@@ -116,7 +107,6 @@ struct AdvertiseService : public BridgeMessage
     std::string service = std::string();
 
     
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct UnadvertiseService : public BridgeMessage
@@ -124,7 +114,6 @@ struct UnadvertiseService : public BridgeMessage
     const std::string op = "unadvertise_service";
     std::string service = std::string();
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct ServiceResponse : public BridgeMessage
@@ -135,7 +124,6 @@ struct ServiceResponse : public BridgeMessage
     std::string* values = nullptr; // Should be custom datatype? List<json>?
     bool result = false;
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 };

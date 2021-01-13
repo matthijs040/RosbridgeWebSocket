@@ -8,6 +8,25 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
+            "program": "${workspaceFolder}/../../devel/lib/boost_websocket_server/test_serializer",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
             "program": "${workspaceFolder}/../../devel/lib/boost_websocket_server/boost_websocket_server_client_node",
             "args": ["172.29.105.227", "10000", "some_text\\"],
             "stopAtEntry": false,

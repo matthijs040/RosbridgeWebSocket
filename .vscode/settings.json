@@ -75,6 +75,11 @@
         "variant": "cpp",
         "bit": "cpp",
         "*.ipp": "cpp",
-        "forward_list": "cpp"
+        "forward_list": "cpp",
+        "any": "cpp",
+        "filesystem": "cpp",
+        "regex": "cpp",
+        "rope": "cpp",
+        "slist": "cpp"
     }
 }

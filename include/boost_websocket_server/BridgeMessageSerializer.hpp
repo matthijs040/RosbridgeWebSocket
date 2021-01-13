@@ -6,6 +6,8 @@
 
 #include "BridgeMessages.hpp"
 
+using namespace BridgeMessages;
+
 
 class BridgeMessageSerializer
 {

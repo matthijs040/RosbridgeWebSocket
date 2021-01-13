@@ -9,6 +9,7 @@ struct BridgeMessage;
 struct SetStatusLevel;
 struct Status;
 struct Authenticate;
+struct Unadvertise;
 struct Advertise;
 struct Publish;
 struct Subscribe;

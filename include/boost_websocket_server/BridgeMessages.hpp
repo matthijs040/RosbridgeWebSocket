@@ -60,6 +60,13 @@ struct Advertise : public BridgeMessage
 
 };
 
+struct Unadvertise : public BridgeMessage
+{
+    const std::string op = "unadvertise";
+    std::unique_ptr<std::string> id = nullptr;
+    std::string topic = std::string();
+};
+
 struct Publish : public BridgeMessage
 {
     const std::string op = "publish";

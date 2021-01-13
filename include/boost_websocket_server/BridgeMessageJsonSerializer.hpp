@@ -32,12 +32,52 @@ void tag_invoke( value_from_tag, value& v, const SetStatusLevel& m )
     };  
 }
 
-void tag_invoke(value_from_tag, value& v, const BridgeMessage& m)
+void tag_invoke(value_from_tag t, value& v, const BridgeMessage& base)
 {
     
-    if(auto message = dynamic_cast<const SetStatusLevel*>(&m))
+    if(auto chld = dynamic_cast<const SetStatusLevel*>(&base))
     { 
-        tag_invoke(value_from_tag(), v, *message); 
+        tag_invoke(t, v, *chld); 
+    }
+    else if(auto chld = dynamic_cast<const Status*>(&base))
+    {
+        tag_invoke(t, v, *chld);
+    }
+    else if(auto chld = dynamic_cast<const Authenticate*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
+    }
+    else if(auto chld = dynamic_cast<const Advertise*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
+    }
+    else if(auto chld = dynamic_cast<const Publish*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
+    }
+    else if(auto chld = dynamic_cast<const Subscribe*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
+    }
+    else if(auto chld = dynamic_cast<const Unsubscribe*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
+    }
+    else if(auto chld = dynamic_cast<const CallService*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
+    }
+    else if(auto chld = dynamic_cast<const AdvertiseService*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
+    }
+    else if(auto chld = dynamic_cast<const UnadvertiseService*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
+    }
+    else if(auto chld = dynamic_cast<const ServiceResponse*>(&base))
+    {
+         tag_invoke(t, v, *chld);       
     }
     else
     {

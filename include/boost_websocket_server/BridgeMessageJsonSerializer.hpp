@@ -10,35 +10,45 @@
 
 using namespace boost::json;
 
-    // from: https://www.boost.org/doc/libs/develop/libs/json/doc/html/json/quick_look.html#json.quick_look.value_conversion
-    // This helper function deduces the type and assigns the value with the matching key
-    template<class T>
-    void extract( object const& obj, T& t, string_view key )
-    {
-        t = value_to<T>( obj.at( key ) );
+
+namespace BridgeMessages
+{
+
+SetStatusLevel tag_invoke( value_to_tag< SetStatusLevel >, const value& v )
+{
+    const object& obj = v.as_object();
+    SetStatusLevel ret;
+    ret.level =  value_to<std::string>(obj.at("level"));
+    ret.id =     std::make_unique<std::string>( value_to<std::string>(obj.at("id")) );
+    return ret;
+}
+
+void tag_invoke( value_from_tag, value& v, const SetStatusLevel& m )
+{
+    v = {
+        { "op", m.op },
+        { "id", m.id ? *(m.id) : "nullptr" },
+        { "level", m.level }
+    };  
+}
+
+void tag_invoke(value_from_tag, value& v, const BridgeMessage& m)
+{
+    
+    if(std::strcmp(m.op.c_str(), "set_level") == 0)
+    { 
+        tag_invoke(value_from_tag(), v, dynamic_cast<const SetStatusLevel&>(m)); 
     }
-
-    SetStatusLevel tag_invoke( value_to_tag< SetStatusLevel >, const value& v )
+    else
     {
-        SetStatusLevel ret;
-        const object& obj = v.as_object();
-        extract( obj, ret.op, "op" );
-        extract( obj, ret.level, "level" );
-        extract( obj, ret.id, "id" ); // NOTE: Assumes that library handles pointers as optional params.
-
-        return ret;
+        v = {"unimplemented type"};
     }
+    
+}
 
+};
 
-    void tag_invoke( value_from_tag, value& v, const SetStatusLevel& m )
-    {
-        v = {
-            { "op", m.op },
-            { "level", m.level },
-            { "id", m.id}
-        };  
-    }
-
+using namespace BridgeMessages;
 
 class BridgeMessageJsonSerializer : public BridgeMessageSerializer
 {
@@ -53,13 +63,15 @@ public:
 
     virtual std::string Serialize(const BridgeMessage& message)
     {
-        return serialize( value_from(message) );
+        return serialize( value_from(message ) );
     }
 
     
     virtual std::unique_ptr<BridgeMessage> Deserialize(const std::string& data)
     {
-        return std::make_unique( value_to<BridgeMessage>( parse(data) ) );
+        auto parsed_json = parse(data);
+        // auto message = value_to<SetStatusLevel>( parsed_json ); 
+        return std::make_unique<SetStatusLevel>( value_to<SetStatusLevel>( parsed_json ) );
     }
 };
 

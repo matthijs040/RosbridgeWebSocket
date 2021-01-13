@@ -3,7 +3,9 @@
 
 class BridgeMessageHandler;     // Declaration required by BridgeMessages.
 
-struct BridgeMessage; // Temporary declarations required by BridgeMessageHandler.
+// Temporary declarations required by BridgeMessageHandler.
+namespace BridgeMessages{
+struct BridgeMessage; 
 struct SetStatusLevel;
 struct Status;
 struct Authenticate;
@@ -15,10 +17,12 @@ struct CallService;
 struct AdvertiseService;
 struct UnadvertiseService;
 struct ServiceResponse;
+};
 
 #include <memory>               // std::unique_ptr
 #include "BridgeMessages.hpp"   // The messages of the Bridge-Protocol
 
+using namespace BridgeMessages;
 
 /**
  * @brief Interface that specifies the functions required to handle the output of a BridgeMessageServer.

@@ -6,19 +6,33 @@
 #include "BridgeMessageHandler.hpp" // BridgeMessageHandler&
 #include "RosMessages.hpp"          // Supported RosMessage payload. (Could be made templated / generic?)
 
-struct BridgeMessage
+namespace BridgeMessages {
+
+class BridgeMessage
 {
+    public:
+
     const std::string op;
+    virtual ~BridgeMessage() = default;
     virtual std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler) = 0;
 };
 
-struct SetStatusLevel : public BridgeMessage
+class SetStatusLevel : public BridgeMessage
 {
+    public:
     const std::string op = "set_level";
-    std::string* id = nullptr;
+    std::unique_ptr<std::string> id = nullptr;
     std::string level = "error";
 
-    std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
+    SetStatusLevel() {}; 
+    SetStatusLevel(const SetStatusLevel& copy)
+    : id( copy.id.get() ? std::make_unique<std::string>( *(copy.id.get()) ) : nullptr )
+    , level(copy.level)
+    {}
+
+    virtual ~SetStatusLevel() {};
+
+    virtual std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
 struct Status : public BridgeMessage
@@ -128,7 +142,7 @@ struct ServiceResponse : public BridgeMessage
     std::unique_ptr<BridgeMessage> getHandled(BridgeMessageHandler& handler); 
 };
 
-
+};
 
 #endif
 

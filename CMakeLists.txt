@@ -13,7 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS system)
+# set(boost_1.75_DIR /home/matthijs/libs/boost_1_75_0/boost)
+# find_package(Boost REQUIRED 1.75 COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -116,8 +117,7 @@ CATKIN_DEPENDS roscpp std_msgs
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  /home/matthijs/catkin_ws/src/boost_websocket_server/include/
-  /home/matthijs/libs/boost_1_75_0/
+  /home/matthijs/catkin_ws/devel/include/json
   ${catkin_INCLUDE_DIRS}
 )
 

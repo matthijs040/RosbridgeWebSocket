@@ -5,8 +5,8 @@
 
 
 struct SetStatusLevel::SetStatusLevel : public BridgeMessage
-{
-    std::unique_ptr<BridgeMessage> SetStatusLevel::getHandled(BridgeMessageHandler& handler)
+{    
+    virtual std::unique_ptr<BridgeMessage> SetStatusLevel::getHandled(BridgeMessageHandler& handler)
     { return handler.HandleSetStatusLevel(*this); } 
 };
 

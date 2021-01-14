@@ -3,8 +3,6 @@
 
 #include <string>                   // std::string
 #include <memory>                   // std::unique_ptr.
-// #include "BridgeMessageHandler.hpp" // BridgeMessageHandler&
-#include "RosMessages.hpp"          // Supported RosMessage payload. (Could be made templated / generic?)
 
 namespace BridgeMessages {
 
@@ -76,8 +74,7 @@ struct Publish : public BridgeMessage
 {
     const std::string op = "publish";
     std::string topic = std::string();
-    RosMessage msg = RosMessage();
-
+    std::string msg = std::string();
 };
 
 struct Subscribe : public BridgeMessage

@@ -14,7 +14,6 @@ using namespace boost::json;
 
 namespace BridgeMessages
 {
-
 SetStatusLevel tag_invoke( value_to_tag< SetStatusLevel >, const value& v )
 {
     const object& obj = v.as_object();

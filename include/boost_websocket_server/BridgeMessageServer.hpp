@@ -14,8 +14,6 @@ class BridgeMessageServer : public StringMessageServer
     private:
     BridgeMessageSerializer& serializer;
 
-
-
     public:
 
     BridgeMessageServer(BridgeMessageSerializer& serializer)
@@ -23,7 +21,7 @@ class BridgeMessageServer : public StringMessageServer
     {
 
     }
-    
+
     virtual void handleRequest(const std::string& request, const std::function<void(const std::string&)>& serveResponse ) override
     {
         auto message = serializer.Deserialize(request);

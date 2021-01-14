@@ -23,14 +23,17 @@ class BridgeMessageServer : public StringMessageServer
     {
 
     }
-
-    void handleRequest(const std::string& request, const std::function<void(const std::string&&)>& serveResponse )
+    
+    virtual void handleRequest(const std::string& request, const std::function<void(const std::string&)>& serveResponse ) override
     {
         auto message = serializer.Deserialize(request);
         
-        
-
         serveResponse(std::move(serializer.Serialize( *(message.get()) ) ) );
+    }
+
+    virtual std::unique_ptr<StringMessageServer> copy() const 
+    {
+        return std::make_unique<BridgeMessageServer>(BridgeMessageServer(serializer));
     }
 };
 

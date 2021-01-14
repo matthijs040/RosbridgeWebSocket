@@ -43,7 +43,7 @@ class session : public std::enable_shared_from_this<session>
 
     websocket::stream<beast::tcp_stream> ws_;
     std::unique_ptr<StringMessageServer> dataHandler;
-    std::function<void(std::string&&)> callback = std::bind(&session::do_write, this, std::placeholders::_1);
+    std::function<void(const std::string&)> callback = std::bind(&session::do_write, this, std::placeholders::_1);
     beast::flat_buffer buffer_;
 
     void fail(beast::error_code ec, char const* what)
@@ -116,7 +116,7 @@ public:
                 shared_from_this()));
     }
 
-    void do_write(std::string&& data)
+    void do_write(const std::string& data)
     {
         auto dataBuf = buffer_.prepare(data.size());            // Get the writable part of the transmission buffer.
         memcpy(dataBuf.data(), data.data(), dataBuf.size());    // Copy the payloiad into the writable buffer.

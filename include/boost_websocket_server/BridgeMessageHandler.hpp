@@ -21,7 +21,7 @@ struct ServiceResponse;
 };
 
 #include <memory>               // std::unique_ptr
-// #include "BridgeMessages.hpp"   // The messages of the Bridge-Protocol
+#include "BridgeMessages.hpp"   // The messages of the Bridge-Protocol
 
 using namespace BridgeMessages;
 

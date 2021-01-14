@@ -3,6 +3,7 @@
 
 #include <string>
 #include <functional>
+#include <memory>
 
 class StringMessageServer
 {
@@ -14,7 +15,7 @@ class StringMessageServer
      * @param request for some behavior to occur or behavior to take place.
      * @param serveResponse function through which a possible response can be served.
      */
-    virtual void handleRequest(std::string&& request, const std::function<void(std::string&&)>& serveResponse ) = 0;
+    virtual void handleRequest(const std::string& request, const std::function<void(const std::string&)>& serveResponse ) = 0;
 
     /**
      * @brief A copy function that returns a StringMessageServer with the same behaviors that the caller object had.

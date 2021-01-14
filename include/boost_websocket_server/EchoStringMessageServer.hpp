@@ -15,7 +15,7 @@ public:
     EchoStringMessageServer() = default;
     ~EchoStringMessageServer() = default;
 
-    virtual void handleRequest(std::string&& request, const std::function<void(std::string&&)>& serveResponse )
+    virtual void handleRequest(const std::string& request, const std::function<void(const std::string&)>& serveResponse )
     {
         serveResponse(std::move(request));
     }

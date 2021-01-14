@@ -143,6 +143,10 @@ target_link_libraries(${PROJECT_NAME}_client_node ${catkin_LIBRARIES} )
 add_executable(test_serializer test/test_serializer.cpp)
 target_link_libraries(test_serializer ${catkin_LIBRARIES} )
 
+add_executable(test_server test/test_server.cpp)
+target_link_libraries(test_server ${catkin_LIBRARIES} )
+
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use

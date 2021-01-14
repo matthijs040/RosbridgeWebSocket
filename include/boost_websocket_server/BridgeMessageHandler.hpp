@@ -1,25 +1,6 @@
 #ifndef BRIDGEMESSAGEHANDLER_HPP
 #define BRIDGEMESSAGEHANDLER_HPP
 
-class BridgeMessageHandler;     // Declaration required by BridgeMessages.
-
-// Temporary declarations required by BridgeMessageHandler.
-namespace BridgeMessages{
-struct BridgeMessage; 
-struct SetStatusLevel;
-struct Status;
-struct Authenticate;
-struct Unadvertise;
-struct Advertise;
-struct Publish;
-struct Subscribe;
-struct Unsubscribe;
-struct CallService;
-struct AdvertiseService;
-struct UnadvertiseService;
-struct ServiceResponse;
-};
-
 #include <memory>               // std::unique_ptr
 #include "BridgeMessages.hpp"   // The messages of the Bridge-Protocol
 

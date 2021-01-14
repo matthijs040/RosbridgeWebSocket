@@ -28,14 +28,14 @@ BridgeMessage tag_invoke( value_to_tag<BridgeMessage>, const value& v)
     const object& obj = v.as_object();
     const auto op = value_to<std::string>(obj.at("op"));
 
-    if(!op.compare("set_level"))
+    if(op == "set_level")
     {
         auto ret = SetStatusLevel();
         ret.id = value_to<std::string>(obj.at("id"));
         ret.level = value_to<std::string>(obj.at("level"));
         return ret;
     }
-    else if(!op.compare("status"))
+    else if(op == "status")
     {
         auto ret = Status();
         ret.id = value_to<std::string>(obj.at("id"));
@@ -43,7 +43,7 @@ BridgeMessage tag_invoke( value_to_tag<BridgeMessage>, const value& v)
         ret.msg = value_to<std::string>(obj.at("msg"));
         return ret;
     }
-    else if(!op.compare("auth"))
+    else if(op == "auth")
     {
         auto ret = Authenticate();
         ret.mac = value_to<std::string>(obj.at("mac"));
@@ -55,7 +55,7 @@ BridgeMessage tag_invoke( value_to_tag<BridgeMessage>, const value& v)
         ret.end = value_to<int>(obj.at("end"));                
         return ret;
     } 
-    else if(!op.compare("advertise"))
+    else if(op == "advertise")
     {
         auto ret = Advertise();
         ret.id = value_to<std::string>(obj.at("id"));
@@ -63,21 +63,21 @@ BridgeMessage tag_invoke( value_to_tag<BridgeMessage>, const value& v)
         ret.type = value_to<std::string>(obj.at("type"));
         return ret;
     }
-    else if(!op.compare("unadvertise"))
+    else if(op == "unadvertise")
     {
         auto ret = Unadvertise();
         ret.id = value_to<std::string>(obj.at("id"));
         ret.topic = value_to<std::string>(obj.at("topic"));
         return ret;
     }
-    else if(!op.compare("publish"))
+    else if(op == "publish")
     {
         auto ret = Publish();
-        ret.msg = RosMessage(); // placeholder.
+        ret.msg = value_to<std::string>(obj.at("msg"));
         ret.topic = value_to<std::string>(obj.at("topic"));
         return ret;
     }
-    else if(!op.compare("subscribe"))
+    else if(op == "subscribe")
     {
         auto ret = Subscribe();
         ret.id = value_to<std::string>(obj.at("id"));
@@ -89,14 +89,14 @@ BridgeMessage tag_invoke( value_to_tag<BridgeMessage>, const value& v)
         ret.compression = value_to<std::string>(obj.at("compression"));
         return ret;
     }
-    else if(!op.compare("unsubscribe"))
+    else if(op == "unsubscribe")
     {
         auto ret = Unsubscribe();
         ret.id = value_to<std::string>(obj.at("id"));
         ret.topic = value_to<std::string>(obj.at("topic"));
         return ret;
     }
-    else if(!op.compare("call_service"))
+    else if(op == "call_service")
     {
         auto ret = CallService();
         ret.id = value_to<std::string>(obj.at("id"));
@@ -106,20 +106,20 @@ BridgeMessage tag_invoke( value_to_tag<BridgeMessage>, const value& v)
         ret.compression = value_to<std::string>(obj.at("compression"));
         return ret;
     }
-    else if(!op.compare("advertise_service"))
+    else if(op == "advertise_service")
     {
         auto ret = AdvertiseService();
         ret.type = value_to<std::string>(obj.at("type"));
         ret.service = value_to<std::string>(obj.at("service")); 
         return ret;
     }
-    else if(!op.compare("unadvertise_service"))
+    else if(op == "unadvertise_service")
     {
         auto ret = UnadvertiseService();
         ret.service = value_to<std::string>(obj.at("service")); 
         return ret;
     }
-    else if(!op.compare("service_response"))
+    else if(op == "service_response")
     {
         auto ret = ServiceResponse();
         ret.id = value_to<std::string>(obj.at("id"));

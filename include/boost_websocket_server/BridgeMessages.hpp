@@ -26,14 +26,14 @@ struct Status : public BridgeMessage
 {
     const std::string op = "status";
     
-    std::string id;
-    std::string level;
-    std::string msg;
+    std::string id = std::string();
+    std::string level= "error";
+    std::string msg = std::string();
 
-    Status(   std::string id    = std::string()
-            , std::string level = std::string()
-            , std::string msg   = std::string())
-    : id(id), level(level), msg(msg) {}
+    // Status(   std::string id    = std::string()
+    //         , std::string level = std::string()
+    //         , std::string msg   = std::string())
+    // : id(id), level(level), msg(msg) {}
 
     bool operator==(const Status& p)
     { return ( op == p.op && id == p.id && level == p.level && msg == p.msg ); }
@@ -85,7 +85,7 @@ struct Publish : public BridgeMessage
 
 struct Subscribe : public BridgeMessage
 {
-    std::string  op = "subscribe";
+    const std::string  op = "subscribe";
     std::string id = std::string();
     std::string topic = std::string();
     std::string type = std::string();

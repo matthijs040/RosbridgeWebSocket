@@ -263,7 +263,7 @@ void tag_invoke( value_from_tag, value& v, const ServiceResponse& m)
 
 void tag_invoke(value_from_tag t, value& v, const BridgeMessage& base)
 {
-    //std::cout << "WARN: tag_invoke on base 'BridgeMessage' called!\n";
+    // Call invoke for the correct sub-type.
     if      (auto chld = dynamic_cast<const SetStatusLevel*>(&base))
     { tag_invoke(t, v, *chld); }
     else if (auto chld = dynamic_cast<const Status*>(&base))

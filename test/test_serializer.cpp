@@ -172,9 +172,6 @@ namespace test
         assert( *dynamic_cast<SetStatusLevel*>( serializer.Deserialize(serializer.Serialize(m)).get() ) == m);
     }
     
-
-
-
 };
 
 

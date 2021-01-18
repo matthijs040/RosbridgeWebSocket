@@ -25,9 +25,15 @@ struct SetStatusLevel : public BridgeMessage
 struct Status : public BridgeMessage
 {
     const std::string op = "status";
-    std::string id = std::string();
-    std::string level = std::string();
-    std::string msg = std::string();
+    
+    std::string id;
+    std::string level;
+    std::string msg;
+
+    Status(   std::string id    = std::string()
+            , std::string level = std::string()
+            , std::string msg   = std::string())
+    : id(id), level(level), msg(msg) {}
 
     bool operator==(const Status& p)
     { return ( op == p.op && id == p.id && level == p.level && msg == p.msg ); }

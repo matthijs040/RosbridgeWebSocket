@@ -2,7 +2,6 @@
 #define BRIDGEMESSAGESERVER_HPP
 
 #include "StringMessageServer.hpp"
-
 #include "BridgeMessageHandler.hpp"
 #include "BridgeMessageSerializer.hpp"
 
@@ -13,11 +12,13 @@ class BridgeMessageServer : public StringMessageServer
 {
     private:
     BridgeMessageSerializer& serializer;
+    std::unique_ptr<BridgeMessageHandler> handler;
 
     public:
 
-    BridgeMessageServer(BridgeMessageSerializer& serializer)
+    BridgeMessageServer(BridgeMessageSerializer& serializer, BridgeMessageHandler& handler)
     : serializer(serializer)
+    , handler(handler.copy() )
     {
 
     }
@@ -31,7 +32,7 @@ class BridgeMessageServer : public StringMessageServer
 
     virtual std::unique_ptr<StringMessageServer> copy() const 
     {
-        return std::make_unique<BridgeMessageServer>(BridgeMessageServer(serializer));
+        return std::make_unique<BridgeMessageServer>( BridgeMessageServer(serializer, *handler ));
     }
 };
 

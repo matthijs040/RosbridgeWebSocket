@@ -22,8 +22,7 @@ public:
 
     virtual std::unique_ptr<StringMessageServer> copy() const
     {
-        auto ret = EchoStringMessageServer();
-        return std::make_unique<EchoStringMessageServer>(ret);
+        return std::make_unique<EchoStringMessageServer>(EchoStringMessageServer());
     }
 };
 

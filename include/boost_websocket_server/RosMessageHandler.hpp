@@ -25,13 +25,40 @@ private:
 
     STATUS current_status = STATUS::ERROR;
     Authenticate last_authentication;
+    int copy_count = 0;
 
 
-    ros::NodeHandle n;
+    
+    ros::NodeHandle* n = nullptr;   // To defer initialization until after ros::init is called with a unique nodename.
     std::map<std::string, ros::Publisher> publishers_by_topic;
 
 
 public:
+
+    RosMessageHandler(const std::string& handler_name = "RosBridgeMessageHandler") 
+    {
+        if(!ros::isStarted())
+        {
+            char* dummy = nullptr;
+            std::string nodename = handler_name + std::to_string(copy_count);
+            int lvalue = 0;
+            ros::init( lvalue, &dummy, nodename, 0 );
+        }
+
+        n = new ros::NodeHandle() ;
+    }
+
+    RosMessageHandler(const RosMessageHandler& other)
+    {
+        copy_count++;
+        n = new ros::NodeHandle(); // Deep copy the nodehandle to ensure that this raw pointer is not shared.
+    }
+
+    ~RosMessageHandler() {
+        delete n;
+        n = nullptr;
+    }
+
     virtual Status HandleSetStatusLevel(const SetStatusLevel &message)
     {
         if( message.level == "none")
@@ -59,7 +86,7 @@ public:
             if(current_status == (STATUS::ERROR | STATUS::WARNING | STATUS::INFO) )
             return Status(message.id, "error", "set_level_nack");
         }
-        
+        return Status(); // TODO: REMOVE THIS
     }
 
     virtual Status HandleStatus(const Status &message)
@@ -72,6 +99,7 @@ public:
         {
             std::cerr << message.msg + "\n";
         }
+        return Status(message.id, "info", "status_ack");
     }
 
     virtual Status HandleAuthenticate(const Authenticate &message)
@@ -83,7 +111,7 @@ public:
     {
         if(message.type == "/nav_msgs/Odometry")
         {
-            const auto pub = n.advertise<nav_msgs::Odometry>(message.topic, 1, true);
+            const auto pub = n->advertise<nav_msgs::Odometry>(message.topic, 1, true);
             publishers_by_topic.emplace( std::make_pair(message.topic, pub) );
             return Status(message.id, "info", "advertise_ack");
         }
@@ -136,12 +164,10 @@ public:
     }
     virtual std::unique_ptr<BridgeMessageHandler> copy() const
     {
-        //auto ret = RosMessageHandler(*this);
         return std::make_unique<RosMessageHandler>(RosMessageHandler(*this));
     }
 
-    RosMessageHandler() {}
-    ~RosMessageHandler() {}
+
 };
 
 #endif // ROSMESSAGEHANDLER_HPP

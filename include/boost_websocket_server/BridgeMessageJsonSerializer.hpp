@@ -88,18 +88,31 @@ public:
     
     virtual std::unique_ptr<BridgeMessage> Deserialize(const std::string& data)
     {
-        auto parsed_json = json::parse(data);
-        const auto operation = parsed_json.at("op").get<std::string>();
-        if(operation == "set_level")
-        { 
-            return std::make_unique<SetStatusLevel>( parsed_json.get<SetStatusLevel>() );
-        }
-        else
+        try
         {
+            auto parsed_json = json::parse(data);
+            const auto operation = parsed_json.at("op").get<std::string>();
+            if(operation == "set_level")
+            { 
+                return std::make_unique<SetStatusLevel>( parsed_json.get<SetStatusLevel>() );
+            }
+            else
+            {
+                return nullptr;
+            }
+        }
+        catch(const nlohmann::detail::parse_error& e)
+        {
+            std::cerr << e.what() << '\n';
+            std::cerr << "parsed data does not conform to json standard \n";
             return nullptr;
         }
-        
-
+        catch(const nlohmann::detail::out_of_range& e)
+        {
+            std::cerr << e.what() << '\n';
+            std::cerr << "parsed json does not contain the required \"op\" field.\n";
+            return nullptr;
+        }
     }
 };
 

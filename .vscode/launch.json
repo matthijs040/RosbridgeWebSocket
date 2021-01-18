@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/../../devel/lib/boost_websocket_server/test_serializer",
+            "program": "${workspaceFolder}/../../devel/lib/boost_websocket_server/test_server",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

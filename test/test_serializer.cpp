@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-#include "../include/boost_websocket_server/ChronoBenchmarker.hpp"
+#include "../include/boost_websocket_server/TestingUtils.hpp"
 
 /**
  * @brief Namespace containing all tests for the BridgeMessageJsonSerializer class.
@@ -16,32 +16,11 @@ namespace test
 
     BridgeMessageJsonSerializer serializer = BridgeMessageJsonSerializer();
 
-    /**
-     * @brief Utility function that tells if a given JSON key-value-pair is contained within a given string. 
-     * NOTE: that only values typeof string are encapsulated with additional quotationmarks as used here.
-     * 
-     * @param data as a json serialized string.
-     * @param key of the json field.
-     * @param value of the json field. 
-     * @return true if the key-value are in the string in json format.
-     * @return false otherwise
-     */
-    bool contains_keyvalue_pair(const std::string& data, const std::string& key, const std::string& value)
-    {
-        return data.find("\"" + key + "\":\"" + value +"\"") != std::string::npos;
-    }
-
-    template<typename T>
-    bool contains_keyvalue_pair(const std::string& data, const std::string& key, const T value)
-    {
-        return data.find("\"" + key + "\":" + std::to_string(value) ) != std::string::npos; 
-    }
-
-
     bool contains(const std::string& data, const std::string& contains)
     {
         return data.find(contains) != std::string::npos;
     }
+
 
     void SetStatusLevel_serialized_preserving_all_fields()
     {

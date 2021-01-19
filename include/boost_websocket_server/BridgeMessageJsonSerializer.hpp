@@ -15,7 +15,7 @@ namespace BridgeMessages
 {
 
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SetStatusLevel, op, id, level)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Status, op, level, msg)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Status, op, id, level, msg)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Authenticate, op, mac, client, dest, rand, t, level, end)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Advertise, op, id, topic, type)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Unadvertise, op, id, topic)
@@ -92,14 +92,33 @@ public:
         {
             auto parsed_json = json::parse(data);
             const auto operation = parsed_json.at("op").get<std::string>();
+
             if(operation == "set_level")
-            { 
-                return std::make_unique<SetStatusLevel>( parsed_json.get<SetStatusLevel>() );
-            }
+            { return std::make_unique<SetStatusLevel>( parsed_json.get<SetStatusLevel>() ); }
+            else if(operation == "status" )
+            { return std::make_unique<Status>( parsed_json.get<Status>() ); }
+            else if(operation == "auth" )
+            { return std::make_unique<Authenticate>( parsed_json.get<Authenticate>() ); }
+            else if(operation == "advertise" )
+            { return std::make_unique<Advertise>( parsed_json.get<Advertise>() ); }
+            else if(operation == "unadvertise" )
+            { return std::make_unique<Unadvertise>( parsed_json.get<Unadvertise>() ); }
+            else if(operation == "publish" )
+            { return std::make_unique<Publish>( parsed_json.get<Publish>() ); }
+            else if(operation == "subscribe" )
+            { return std::make_unique<Subscribe>( parsed_json.get<Subscribe>() ); }
+            else if(operation == "unsubscribe" )
+            { return std::make_unique<Unsubscribe>( parsed_json.get<Unsubscribe>() ); }
+            else if(operation == "call_service" )
+            { return std::make_unique<CallService>( parsed_json.get<CallService>() ); }
+            else if(operation == "advertise_service" )
+            { return std::make_unique<AdvertiseService>( parsed_json.get<AdvertiseService>() ); }
+            else if(operation == "unadvertise_service" )
+            { return std::make_unique<UnadvertiseService>( parsed_json.get<UnadvertiseService>() ); }
+            else if(operation == "service_response" )
+            { return std::make_unique<UnadvertiseService>( parsed_json.get<UnadvertiseService>() ); }
             else
-            {
-                return nullptr;
-            }
+            { return nullptr; }
         }
         catch(const nlohmann::detail::parse_error& e)
         {

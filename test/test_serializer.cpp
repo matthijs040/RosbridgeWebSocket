@@ -1,4 +1,4 @@
-#include <boost/json/src.hpp>
+//#include <boost/json/src.hpp>
 
 #include "../include/boost_websocket_server/BridgeMessageJsonSerializer.hpp"
 #include "../include/boost_websocket_server/BridgeMessages.hpp"
@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-#include <chrono>
+#include "../include/boost_websocket_server/ChronoBenchmarker.hpp"
 
 /**
  * @brief Namespace containing all tests for the BridgeMessageJsonSerializer class.
@@ -48,7 +48,7 @@ namespace test
         // Given:
         auto message = SetStatusLevel();
         message.level = "error";
-        message.id = std::string("id:10");
+        message.id = "id_10";
 
         // When:
         auto data = serializer.Serialize(message);
@@ -72,8 +72,8 @@ namespace test
     {
         auto m = Status();
         m.level = "error";
-        m.id = std::string("id:1");
-        m.msg = std::string("msg_string");
+        m.id = "id_string";
+        m.msg = "msg_string";
 
         auto data = serializer.Serialize(m);
         
@@ -192,7 +192,7 @@ int main(int argc, char const *argv[])
     {
         std::cout << "without dyncast x10000\n";
         auto start = std::chrono::steady_clock::now();
-
+        
         for(int i = 10000; i > 0; i--)
        {
             test::serializer.Serialize(ServiceResponse());

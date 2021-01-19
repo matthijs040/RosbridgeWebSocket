@@ -7,6 +7,7 @@
 
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
+#include <sensor_msgs/NavSatFix.h>
 
 
 
@@ -32,6 +33,13 @@ private:
     ros::NodeHandle* n = nullptr;   // To defer initialization until after ros::init is called with a unique nodename.
     std::map<std::string, ros::Publisher> publishers_by_topic;
 
+    template<typename MessageType>
+    Status advertise_handled(const Advertise& message)
+    {
+        const auto pub = n->advertise<MessageType>(message.topic, 1, true);
+        publishers_by_topic.emplace( message.topic, pub );
+        return Status(message.id, "info", "advertise_ack");
+    }
 
 public:
 
@@ -110,11 +118,9 @@ public:
     virtual Status HandleAdvertise(const Advertise& message)
     {
         if(message.type == "/nav_msgs/Odometry")
-        {
-            const auto pub = n->advertise<nav_msgs::Odometry>(message.topic, 1, true);
-            publishers_by_topic.emplace( std::make_pair(message.topic, pub) );
-            return Status(message.id, "info", "advertise_ack");
-        }
+        { return advertise_handled<nav_msgs::Odometry>(message); }
+        else if(message.type == "/sensor_msgs/NavSatFix")
+        { return advertise_handled<sensor_msgs::NavSatFix>(message); }
         else
         {
             return Status(message.id, "error", "advertise_nack_invalid_topic");

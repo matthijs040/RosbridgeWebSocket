@@ -5,6 +5,8 @@
 
 #include "../include/boost_websocket_server/BoostWebSocketClient.hpp"
 
+#include "../include/boost_websocket_server/ChronoBenchmarker.hpp"
+
 void function(const std::string& response)
 {
     std::cout << "response served: " << response << "\n";
@@ -22,9 +24,13 @@ int main(int argc, char const *argv[])
     auto messageServer = BridgeMessageServer(serializer, messageHandler);
     //auto server = BoostWebSocketServer(addr, port, threads, messageServer); Actual server not set up.
 
-    messageServer.handleRequest("{ \"op\", \"set_level\" : \"level\", \"info\"}", function );
+    benchmark::run(
+        [&messageServer]()
+        {
+            messageServer.handleRequest("{\"op\":\"advertise\",\"topic\":\"/android/phone/GPS\",\"id\":\"\",\"type\":\"/sensor_msgs/NavSatFix\"}", function );
+        },
+        true
+    );
 
-
-
-    return 0;
+    return EXIT_SUCCESS;
 }

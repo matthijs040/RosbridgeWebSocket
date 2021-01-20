@@ -32,10 +32,13 @@ namespace test
 
 namespace benchmark 
 {
-    double run(std::function<void(void)> function)
+    double run(std::function<void(void)> function, int times)
     {
         auto start = std::chrono::steady_clock::now();
-        function();
+
+        for(int i = 0; i < times; i++)
+            function();
+            
         auto end = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed_seconds = end-start;
         return elapsed_seconds.count();

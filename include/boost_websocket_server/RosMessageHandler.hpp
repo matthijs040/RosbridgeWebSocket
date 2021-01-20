@@ -6,10 +6,9 @@
 #include <map>
 
 #include <ros/ros.h>
+
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/NavSatFix.h>
-
-
 
 enum STATUS
 {
@@ -28,17 +27,26 @@ private:
     Authenticate last_authentication;
     int copy_count = 0;
 
-
     
-    ros::NodeHandle* n = nullptr;   // To defer initialization until after ros::init is called with a unique nodename.
+    std::unique_ptr<ros::NodeHandle> n = nullptr;   // To defer initialization until after ros::init is called with a unique nodename.
     std::map<std::string, ros::Publisher> publishers_by_topic;
 
+    /**
+     * @brief Appends a new publisher for the given topic in the advertisemessage.
+     * 
+     * @tparam MessageType 
+     * @param message 
+     * @return Status 
+     */
     template<typename MessageType>
     Status advertise_handled(const Advertise& message)
     {
         const auto pub = n->advertise<MessageType>(message.topic, 1, true);
-        publishers_by_topic.emplace( message.topic, pub );
-        return Status(message.id, "info", "advertise_ack");
+        
+        if( publishers_by_topic.emplace( message.topic, pub ).second ) 
+            return Status(message.id, "info", "advertise_ack"); 
+        
+        return Status(message.id, "error", "advertise_nack_already_advertised");
     }
 
 public:
@@ -53,18 +61,13 @@ public:
             ros::init( lvalue, &dummy, nodename, 0 );
         }
 
-        n = new ros::NodeHandle() ;
+        n = std::make_unique<ros::NodeHandle>(ros::NodeHandle());
     }
 
     RosMessageHandler(const RosMessageHandler& other)
     {
-        copy_count++;
-        n = new ros::NodeHandle(); // Deep copy the nodehandle to ensure that this raw pointer is not shared.
-    }
-
-    ~RosMessageHandler() {
-        delete n;
-        n = nullptr;
+        copy_count++; // Might be unessecary? ros runtime might only be initialized once?
+        n = std::make_unique<ros::NodeHandle>(ros::NodeHandle());
     }
 
     virtual Status HandleSetStatusLevel(const SetStatusLevel &message)
@@ -91,7 +94,9 @@ public:
         }
         else
         {
-            if(current_status == (STATUS::ERROR | STATUS::WARNING | STATUS::INFO) )
+            if( current_status == STATUS::ERROR 
+             || current_status == STATUS::WARNING
+             || current_status == STATUS::INFO )
             return Status(message.id, "error", "set_level_nack");
         }
         return Status(); // TODO: REMOVE THIS
@@ -131,13 +136,9 @@ public:
     virtual Status HandleUnadvertise(const Unadvertise& message)
     {
         if(publishers_by_topic.erase(message.topic) > 0)
-        {
-            return Status(message.id, "info", "unadvertise_ack");
-        }
+        { return Status(message.id, "info", "unadvertise_ack"); }
         else
-        {
-            return Status(message.id, "error", "unadvertise_nack_not_advertised");
-        }
+        { return Status(message.id, "error", "unadvertise_nack_not_advertised"); }
     }
 
     virtual Status HandlePublish(const Publish &message)

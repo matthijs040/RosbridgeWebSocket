@@ -4,9 +4,8 @@
 #include <chrono>       // td::chrono::steady_clock, std::chrono::duration
 #include <functional>   // std::function
 #include <iostream>     // std::cout 
-#include <cctype>       // std::isdigit
+#include <sstream>
 
-#include <sstream> // std::stringstream
 namespace test
 {
     /**
@@ -29,29 +28,25 @@ namespace test
         return data.find("\"" + key + "\":" + std::to_string(value) ) != std::string::npos; 
     }
 
+    /**
+     * @brief helper function to split comma seperated decimal values from a std::string into a vector.  
+     * Based on: https://stackoverflow.com/questions/289347/using-strtok-with-a-stdstring
+     * Assumes that the data string is properly started terminated, and separated.
+     * @throws std::invalid_argument if the string does not consist of only CSVs
+     * @param values 
+     * @return std::vector<double> 
+     */
     std::vector<double> getCSVs(const std::string& values)
     {
-        auto ret = std::vector<double>();
-        std::stringstream ss(values);
+        auto ret = std::vector<double>();        
+        std::istringstream iss(values);
+        std::string token;
 
-
-
-        for(double i; ss >> i;)
+        while (std::getline(iss, token, ','))
         {
-            ret.push_back(i);
-            if(ss.peek() == ',')        // Seperation character.
-                ss.ignore();
-            else if(ss.peek() == ']')   // Terminiation character.
-            {
-                break;
-            }
-            else if(!std::isdigit(ss.peek()))   // Non-data character. Invalid string.
-            {
-                ret.clear();    
-                return ret;
-            }
+            ret.push_back(std::stod(token));
         }
-
+        return ret;
     }
 
     /**
@@ -69,23 +64,17 @@ namespace test
     {
         // First checks if the key is present. Followed by an array opener.
         const auto array_key = "\"" + key + "\":[";
-        const auto start = data.find(array_key);
+        const auto start = data.find(array_key) + array_key.length();
         if(start == std::string::npos)
         {
             return false;
         }
-        const auto result = getCSVs( data.substr(start + array_key.length()) );
+        const auto end = data.find(']', start) - 1;
+        const auto result = getCSVs( data.substr(start, end - start) );
         if(result == value)
             return true;
         
         return false;
-
-        // auto read_values = std::vector<double>();
-        // read_values.reserve(values.size());
-        // 
-        // 
-        // valuesString.erase(valuesString.end() - 1); //remove the last added ','
-        // return contains_keyvalue_pair(data, key, "[" + valuesString + "]");
     }
 
 };

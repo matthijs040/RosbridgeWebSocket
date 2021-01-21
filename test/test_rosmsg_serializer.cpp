@@ -28,7 +28,15 @@ namespace test
 
         auto ptr = msg.covariance.data();
         auto size =  msg.covariance.size();
+
         assert( contains_keyvalue_pair(data, "covariance", std::vector<double>(ptr, ptr + size) ) );
+
+
+        auto des = serializer.Deserialize<geometry_msgs::PoseWithCovariance>(data);
+        std::cout << "\n\n deserialization: \n" << des << '\n';
+
+
+        assert( msg ==  des);
     }
 };
 

@@ -40,7 +40,7 @@ namespace nlohmann {
 
         static void from_json(const json& j, boost::array<T, N>& data) 
         {
-            if (!j.is_null() && j.is_array() && j.size() == ( sizeof(T) * N ) ) {
+            if (!j.is_null() && j.is_array() && j.size() == data.size() ) {
                 int ind = 0;
                 for(auto item : j.items())
                 {

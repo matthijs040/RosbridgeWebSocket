@@ -31,7 +31,10 @@ namespace nlohmann {
             if (N == 0) {
                 j = nullptr;
             } else {
-              j = data;
+                for(const auto& value : data )
+                {
+                    j.push_back(value);
+                }
             }
         }
 

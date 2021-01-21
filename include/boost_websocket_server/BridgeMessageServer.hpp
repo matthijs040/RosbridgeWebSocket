@@ -20,7 +20,7 @@ class BridgeMessageServer : public StringMessageServer
     : serializer(serializer)
     , handler(handler.copy() )
     {
-
+        
     }
 
     virtual void handleRequest(const std::string& request, const std::function<void(const std::string&)>& serveResponse ) override

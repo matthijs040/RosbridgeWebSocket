@@ -1,6 +1,6 @@
 #include "../include/boost_websocket_server/RosMessageJsonSerializer.hpp"
+#include "../include/boost_websocket_server/TestingUtils.hpp"
 
-#include <geometry_msgs/Point.h>
 #include <iostream>
 
 namespace test
@@ -23,8 +23,12 @@ namespace test
         for(auto& val : msg.covariance)
         { val = set++; }
 
-        std::cout << serializer.Serialize(msg) << "\n";
+        const auto data = serializer.Serialize(msg);
+        std::cout << data << "\n";
 
+        auto ptr = msg.covariance.data();
+        auto size =  msg.covariance.size();
+        assert( contains_keyvalue_pair(data, "covariance", std::vector<double>(ptr, ptr + size) ) );
     }
 };
 

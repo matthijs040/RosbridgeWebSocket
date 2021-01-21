@@ -5,6 +5,64 @@
 
 namespace test
 {
+    void point_correctly_serializes()
+    {
+        auto serializer = RosMessageJsonSerializer();
+        auto msg = geometry_msgs::Point();  
+
+        msg.x = 1;
+        msg.y = 2;
+        msg.z = 3;
+
+        const auto data = serializer.Serialize(msg);
+
+        assert(contains_keyvalue_pair(data, "x", msg.x));
+        assert(contains_keyvalue_pair(data, "y", msg.y));
+        assert(contains_keyvalue_pair(data, "z", msg.z));
+    }
+
+    void point_correctly_deserializes()
+    {
+        auto serializer = RosMessageJsonSerializer();
+        auto msg = geometry_msgs::Point();  
+
+        msg.x = 1;
+        msg.y = 2;
+        msg.z = 3;
+
+        const auto data = serializer.Deserialize<geometry_msgs::Point>(serializer.Serialize(msg));
+        assert(data == msg);
+    }
+
+    void vector3_correctly_serializes()
+    {
+        auto serializer = RosMessageJsonSerializer();
+        auto msg = geometry_msgs::Vector3();  
+
+        msg.x = 1;
+        msg.y = 2;
+        msg.z = 3;
+
+        const auto data = serializer.Serialize(msg);
+
+        assert(contains_keyvalue_pair(data, "x", msg.x));
+        assert(contains_keyvalue_pair(data, "y", msg.y));
+        assert(contains_keyvalue_pair(data, "z", msg.z));
+    }
+
+    void vector3_correctly_deserializes()
+    {
+        auto serializer = RosMessageJsonSerializer();
+        auto msg = geometry_msgs::Vector3();  
+
+        msg.x = 1;
+        msg.y = 2;
+        msg.z = 3;
+
+        const auto data = serializer.Deserialize<geometry_msgs::Vector3>(serializer.Serialize(msg));
+        assert(data == msg);       
+    }
+
     void pose_with_covariance_correctly_deSerializes()
     {
         auto serializer = RosMessageJsonSerializer();
@@ -24,17 +82,12 @@ namespace test
         { val = set++; }
 
         const auto data = serializer.Serialize(msg);
-        std::cout << data << "\n";
 
         auto ptr = msg.covariance.data();
         auto size =  msg.covariance.size();
-
         assert( contains_keyvalue_pair(data, "covariance", std::vector<double>(ptr, ptr + size) ) );
 
-
         auto des = serializer.Deserialize<geometry_msgs::PoseWithCovariance>(data);
-        std::cout << "\n\n deserialization: \n" << des << '\n';
-
 
         assert( msg ==  des);
     }
@@ -42,11 +95,10 @@ namespace test
 
 int main(int argc, char const *argv[])
 {
-
-
-
+    test::point_correctly_serializes();
+    test::point_correctly_deserializes();
+    test::vector3_correctly_serializes();
     test::pose_with_covariance_correctly_deSerializes();
-
 
     return 0;
 }

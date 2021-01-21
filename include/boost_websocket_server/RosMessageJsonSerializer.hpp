@@ -73,9 +73,11 @@ namespace geometry_msgs
 
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Twist, angular, linear)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TwistWithCovariance, twist, covariance)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(TwistWithCovarianceStamped, header, twist)
 
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Pose, position, orientation)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PoseWithCovariance, pose, covariance)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PoseWithCovarianceStamped, header, pose)
 };
 
 

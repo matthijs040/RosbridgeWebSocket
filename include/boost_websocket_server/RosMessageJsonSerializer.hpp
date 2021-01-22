@@ -27,7 +27,8 @@ namespace std_msgs
 
 // Example ripped from: https://github.com/nlohmann/json#how-do-i-convert-third-party-types
 // Specialized for boost::array<double, size> used in the Covariance structure.
-namespace nlohmann {
+namespace nlohmann 
+{
     template <typename T, std::size_t N>
     struct adl_serializer<boost::array<T, N>> {
         static void to_json(json& j, const boost::array<T, N>& data) {
@@ -55,19 +56,7 @@ namespace nlohmann {
             }
         }
     };
-
-    template <class... Types>
-    struct adl_serializer<std::variant<Types...>> {
-        static void to_json(json& j, const std::variant<Types>& data) {
-            to_json(j, )
-        }
-
-        static void from_json(const json& j, std::variant<Types>& data) 
-        {
-            
-        }
-    };
-}
+};
 
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Point.h>
@@ -99,7 +88,7 @@ namespace geometry_msgs
 };
 
 
-
+#include <type_traits>
 
 class RosMessageJsonSerializer
 {
@@ -112,24 +101,28 @@ public:
     , geometry_msgs::Twist, geometry_msgs::TwistWithCovariance, geometry_msgs::TwistWithCovarianceStamped
     , geometry_msgs::Pose, geometry_msgs::PoseWithCovariance, geometry_msgs::PoseWithCovarianceStamped >;
 
-    static constexpr std::map<std::string, supported_message>& supported_messages_by_name 
-    {
-        { "/std_msgs/float32", std_msgs::Float32() },
-        { "/std_msgs/float64", std_msgs::Float64() }
-    };
-
     RosMessageJsonSerializer(/* args */) {}
     ~RosMessageJsonSerializer() {}
 
-    supported_message Deserialize(const std::string& data)
+    template<typename message>
+    message Deserialize(const std::string& data)
     {
-        //return json::parse(data).get<supported_message>();
+        return json::parse(data).get<message>();
     }
 
 
+    //template<typename message>
     std::string Serialize(const supported_message& message)
     {
-        return json(message).dump();
+        std::visit(
+            [](auto&& arg) 
+            {
+                using Type = std::decay_t<decltype(arg)>;
+                Type realMessage = arg;
+                return json(realMessage).dump();
+            } , message
+        );
+        return std::string();
     }
 };
 

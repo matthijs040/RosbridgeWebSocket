@@ -143,8 +143,8 @@ target_link_libraries(${PROJECT_NAME}_client_node ${catkin_LIBRARIES} )
 add_executable(test_serializer test/test_serializer.cpp)
 target_link_libraries(test_serializer ${catkin_LIBRARIES} )
 
-add_executable(test_server test/test_server.cpp)
-target_link_libraries(test_server ${catkin_LIBRARIES} )
+# add_executable(test_server test/test_server.cpp)
+# target_link_libraries(test_server ${catkin_LIBRARIES} )
 
 add_executable(test_rosmsg_serializer test/test_rosmsg_serializer.cpp)
 target_link_libraries(test_rosmsg_serializer ${catkin_LIBRARIES} )

@@ -59,10 +59,10 @@ public:
     const RosMessageJsonSerializer& serializer;
 
     RosMessageHandler(const RosMessageJsonSerializer& serializer, const std::string& handler_name = "RosBridgeMessageHandler")
-    : serializer(serializer)
-    , publishers_by_topic()     // Is this default initialization?
+    : publishers_by_topic()     // Is this default initialization?
     , subscribers_by_topic()
     , spinner( ros::AsyncSpinner(0) )
+    , serializer(serializer)
     {
         if(!ros::isStarted())
         {

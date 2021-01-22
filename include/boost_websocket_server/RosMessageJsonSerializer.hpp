@@ -100,36 +100,52 @@ public:
 
 private:
 
-    struct ParseError { ParseError(const char* m) {} };
+    // shamelessly ripped from: http://coliru.stacked-crooked.com/a/91462340f495ad24
+    // https://stackoverflow.com/questions/57642102/how-to-iterate-over-the-types-of-stdvariant
 
-    template <std::size_t I = 0>
+    // Compile-time error that is thrown if a specialization of the variant parse function is not found.
+    struct ParseError { ParseError(const char* m) {} }; 
+
+    // Resolver function for the subtypes of the supported message variant.
+    template <std::size_t I = 0>                // Subtype count.
     supported_message parse(const json& j)
     {
-        if constexpr (I < std::variant_size_v<supported_message>)
+        if constexpr (I < std::variant_size_v<supported_message>)   // While there are subtypes to evaluate.
         {
-            auto result = j.get<std::variant_alternative_t<I, supported_message>>();
+            auto result = j.get<std::optional<std::variant_alternative_t<I, supported_message>>>();    // Try the subtype at index I
 
-            return result ? std::move(*result) : parse<I + 1>(j);
+            return result ? std::move(*result) : parse<I + 1>(j);   // Return the valid specialization result. Iterate otherwise.
         } 
         throw ParseError("Can't parse");
     }
+
+    template <std::size_t I = 0>               
+    json construct(const supported_message& msg)
+    {
+        if constexpr (I < std::variant_size_v<supported_message>)
+        {
+            auto result = std::get<std::optional<std::variant_alternative_t<I, supported_message>>>(msg);
+
+            return result ? std::move(json(*result)) : construct<I + 1>(msg);
+        } 
+        throw ParseError("Can't construct");
+    }
+
 
 public:
 
     RosMessageJsonSerializer(/* args */) {}
     ~RosMessageJsonSerializer() {}
 
-    template<typename m>
-    m Deserialize(const std::string& data)
+    supported_message Deserialize(const std::string& data)
     {
-        return json::parse(data).get<m>();
+        const auto json = json::parse(data);
+        return parse(json);
     }
 
-
-    template<typename m>
-    std::string Serialize(const m& message)
+    std::string Serialize(const supported_message& message)
     {
-        return json(message).dump();
+        return construct(message).dump();
     }
 };
 

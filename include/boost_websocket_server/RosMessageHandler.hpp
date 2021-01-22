@@ -1,11 +1,13 @@
 #ifndef ROSMESSAGEHANDLER_HPP
 #define ROSMESSAGEHANDLER_HPP
 
+#include "RosMessageJsonSerializer.hpp" // Serializer
 #include "BridgeMessageHandler.hpp" // The interface this class complies with.
 #include <iostream>                 // std::cout, std::cerr
 #include <map>
 
 #include <ros/ros.h>
+#include <ros/spinner.h>
 
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/NavSatFix.h>
@@ -24,12 +26,15 @@ class RosMessageHandler : public BridgeMessageHandler
 private:
 
     STATUS current_status = STATUS::ERROR;
-    Authenticate last_authentication;
+
     int copy_count = 0;
 
     
-    std::unique_ptr<ros::NodeHandle> n = nullptr;   // To defer initialization until after ros::init is called with a unique nodename.
+    std::unique_ptr<ros::NodeHandle> n;   // To defer initialization until after ros::init is called with a unique nodename.
     std::map<std::string, ros::Publisher> publishers_by_topic;
+    std::map<std::string, ros::Subscriber> subscribers_by_topic;
+
+    ros::AsyncSpinner spinner;
 
     /**
      * @brief Appends a new publisher for the given topic in the advertisemessage.
@@ -51,7 +56,13 @@ private:
 
 public:
 
-    RosMessageHandler(const std::string& handler_name = "RosBridgeMessageHandler") 
+    const RosMessageJsonSerializer& serializer;
+
+    RosMessageHandler(const RosMessageJsonSerializer& serializer, const std::string& handler_name = "RosBridgeMessageHandler")
+    : serializer(serializer)
+    , publishers_by_topic()     // Is this default initialization?
+    , subscribers_by_topic()
+    , spinner( ros::AsyncSpinner(0) )
     {
         if(!ros::isStarted())
         {
@@ -62,9 +73,14 @@ public:
         }
 
         n = std::make_unique<ros::NodeHandle>(ros::NodeHandle());
+
+        if(spinner.canStart())  // If another spinner is already active, the callbacks registered here will already be called.
+            spinner.start();
     }
 
     RosMessageHandler(const RosMessageHandler& other)
+    : spinner(ros::AsyncSpinner(other.spinner)) // Asyncspinner might contain ros related resources. Should be deep copied.
+    , serializer(other.serializer)              // Serializer does not contain state. it may be moved.
     {
         copy_count++; // Might be unessecary? ros runtime might only be initialized once?
         n = std::make_unique<ros::NodeHandle>(ros::NodeHandle());
@@ -147,6 +163,26 @@ public:
     }
     virtual Status HandleSubscribe(const Subscribe& message, const std::function<void(const Publish&)> &callback)
     {
+        if(subscribers_by_topic.count(message.topic))
+        {
+            return Status(message.id, "error", "subscribe_nack_already_subscribed");
+        }
+        try
+        {
+            auto sub = n->subscribe(message.topic,message.queue_length, 
+                [this](const geometry_msgs::Vector3::ConstPtr msg){
+                    serializer.Serialize()
+
+                });
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        
+
+
+
         return Status();
     }
     virtual Status HandleUnsubscribe(const Unsubscribe &message)

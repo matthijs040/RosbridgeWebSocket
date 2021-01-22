@@ -4,7 +4,8 @@
 #include "json.hpp"
 using nlohmann::json;
 
-#include <ros/ros.h> // ros::Time
+#include <ros/ros.h>    // ros::Time
+#include <variant>      // std::variant
 
 namespace ros
 {
@@ -21,6 +22,8 @@ namespace std_msgs
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Float64, data)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Header, seq, stamp, frame_id)
 }; 
+
+
 
 // Example ripped from: https://github.com/nlohmann/json#how-do-i-convert-third-party-types
 // Specialized for boost::array<double, size> used in the Covariance structure.
@@ -50,6 +53,18 @@ namespace nlohmann {
             } else {
                 data = boost::array<T, N>();
             }
+        }
+    };
+
+    template <class... Types>
+    struct adl_serializer<std::variant<Types...>> {
+        static void to_json(json& j, const std::variant<Types>& data) {
+            to_json(j, )
+        }
+
+        static void from_json(const json& j, std::variant<Types>& data) 
+        {
+            
         }
     };
 }
@@ -85,22 +100,34 @@ namespace geometry_msgs
 
 
 
+
 class RosMessageJsonSerializer
 {
 private:
-   
 public:
+
+    using supported_message = std::variant<
+      Time, std_msgs::Float32, std_msgs::Float64, std_msgs::Header
+    , geometry_msgs::Point32, geometry_msgs::Point, geometry_msgs::Vector3, geometry_msgs::Quaternion
+    , geometry_msgs::Twist, geometry_msgs::TwistWithCovariance, geometry_msgs::TwistWithCovarianceStamped
+    , geometry_msgs::Pose, geometry_msgs::PoseWithCovariance, geometry_msgs::PoseWithCovarianceStamped >;
+
+    static constexpr std::map<std::string, supported_message>& supported_messages_by_name 
+    {
+        { "/std_msgs/float32", std_msgs::Float32() },
+        { "/std_msgs/float64", std_msgs::Float64() }
+    };
+
     RosMessageJsonSerializer(/* args */) {}
     ~RosMessageJsonSerializer() {}
 
-    template<typename MessageType>
-    MessageType Deserialize(const std::string& data)
+    supported_message Deserialize(const std::string& data)
     {
-        return json::parse(data).get<MessageType>();
+        //return json::parse(data).get<supported_message>();
     }
 
-    template<typename MessageType>
-    std::string Serialize(const MessageType& message)
+
+    std::string Serialize(const supported_message& message)
     {
         return json(message).dump();
     }

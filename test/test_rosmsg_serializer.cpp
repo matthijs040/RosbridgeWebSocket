@@ -34,6 +34,22 @@ namespace test
         assert(data == msg);
     }
 
+    void header_correctly_serializes()
+    {
+        auto serializer = RosMessageJsonSerializer();
+        auto msg = std_msgs::Header();
+
+        msg.frame_id = "test_id";
+        msg.seq = 1;
+        msg.stamp = ros::Time(1, 2);
+
+        const auto data = serializer.Serialize(msg);
+        assert( contains_keyvalue_pair(data, "frame_id", msg.frame_id) );
+        assert( contains_keyvalue_pair(data, "seq", msg.seq) );
+        assert( contains_keyvalue_pair(data, "sec", msg.stamp.sec) );
+        assert( contains_keyvalue_pair(data, "nsec", msg.stamp.nsec) );
+    }
+
     void vector3_correctly_serializes()
     {
         auto serializer = RosMessageJsonSerializer();
@@ -97,6 +113,7 @@ int main(int argc, char const *argv[])
 {
     test::point_correctly_serializes();
     test::point_correctly_deserializes();
+    test::header_correctly_serializes();
     test::vector3_correctly_serializes();
     test::pose_with_covariance_correctly_deSerializes();
 

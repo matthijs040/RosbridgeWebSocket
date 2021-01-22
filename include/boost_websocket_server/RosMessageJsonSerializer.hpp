@@ -10,7 +10,7 @@ using nlohmann::json;
 namespace ros
 {
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Time, sec, nsec) 
-}
+};
 
 #include <std_msgs/Float32.h>
 #include <std_msgs/Float64.h>
@@ -92,37 +92,44 @@ namespace geometry_msgs
 
 class RosMessageJsonSerializer
 {
-private:
 public:
-
-    using supported_message = std::variant<
-      Time, std_msgs::Float32, std_msgs::Float64, std_msgs::Header
+    using supported_message = std::variant< ros::Time, std_msgs::Float32, std_msgs::Float64, std_msgs::Header
     , geometry_msgs::Point32, geometry_msgs::Point, geometry_msgs::Vector3, geometry_msgs::Quaternion
     , geometry_msgs::Twist, geometry_msgs::TwistWithCovariance, geometry_msgs::TwistWithCovarianceStamped
     , geometry_msgs::Pose, geometry_msgs::PoseWithCovariance, geometry_msgs::PoseWithCovarianceStamped >;
 
+private:
+
+    struct ParseError { ParseError(const char* m) {} };
+
+    template <std::size_t I = 0>
+    supported_message parse(const json& j)
+    {
+        if constexpr (I < std::variant_size_v<supported_message>)
+        {
+            auto result = j.get<std::variant_alternative_t<I, supported_message>>();
+
+            return result ? std::move(*result) : parse<I + 1>(j);
+        } 
+        throw ParseError("Can't parse");
+    }
+
+public:
+
     RosMessageJsonSerializer(/* args */) {}
     ~RosMessageJsonSerializer() {}
 
-    template<typename message>
-    message Deserialize(const std::string& data)
+    template<typename m>
+    m Deserialize(const std::string& data)
     {
-        return json::parse(data).get<message>();
+        return json::parse(data).get<m>();
     }
 
 
-    //template<typename message>
-    std::string Serialize(const supported_message& message)
+    template<typename m>
+    std::string Serialize(const m& message)
     {
-        std::visit(
-            [](auto&& arg) 
-            {
-                using Type = std::decay_t<decltype(arg)>;
-                Type realMessage = arg;
-                return json(realMessage).dump();
-            } , message
-        );
-        return std::string();
+        return json(message).dump();
     }
 };
 

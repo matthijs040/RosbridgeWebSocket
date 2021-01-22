@@ -29,10 +29,10 @@ private:
 
     int copy_count = 0;
 
-    
     std::unique_ptr<ros::NodeHandle> n;   // To defer initialization until after ros::init is called with a unique nodename.
-    std::map<std::string, ros::Publisher> publishers_by_topic;
-    std::map<std::string, ros::Subscriber> subscribers_by_topic;
+    std::map<std::string, ros::Publisher>           publishers_by_topic;    // Table where active publishers are held.
+    std::map<std::string, ros::Subscriber>          subscribers_by_topic;   // Table where active subscribers are held.
+    std::map<std::string, std::function<void()>>    callback_by_type;       // Table where supported callbacks to create subscribers are held.
 
     ros::AsyncSpinner spinner;
 
@@ -167,21 +167,8 @@ public:
         {
             return Status(message.id, "error", "subscribe_nack_already_subscribed");
         }
-        try
-        {
-            auto sub = n->subscribe(message.topic,message.queue_length, 
-                [this](const geometry_msgs::Vector3::ConstPtr msg){
-                    serializer.Serialize()
 
-                });
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-        }
-        
-
-
+ 
 
         return Status();
     }

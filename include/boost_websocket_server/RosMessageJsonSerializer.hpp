@@ -112,7 +112,7 @@ private:
     {
         if constexpr (I < std::variant_size_v<supported_message>)   // While there are subtypes to evaluate.
         {
-            auto result = j.get<std::optional<std::variant_alternative_t<I, supported_message>>>();    // Try the subtype at index I
+            auto result = j.get_ptr<std::variant_alternative_t<I, supported_message>*>();    // Try the subtype at index I
 
             return result ? std::move(*result) : parse<I + 1>(j);   // Return the valid specialization result. Iterate otherwise.
         } 

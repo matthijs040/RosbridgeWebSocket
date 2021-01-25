@@ -134,17 +134,17 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_server_node src/server_node.cpp)
-target_link_libraries(${PROJECT_NAME}_server_node ${catkin_LIBRARIES} )
-
-add_executable(${PROJECT_NAME}_client_node src/client_node.cpp)
-target_link_libraries(${PROJECT_NAME}_client_node ${catkin_LIBRARIES} )
-
-add_executable(test_serializer test/test_serializer.cpp)
-target_link_libraries(test_serializer ${catkin_LIBRARIES} )
-
-# add_executable(test_server test/test_server.cpp)
-# target_link_libraries(test_server ${catkin_LIBRARIES} )
+# add_executable(${PROJECT_NAME}_server_node src/server_node.cpp)
+# target_link_libraries(${PROJECT_NAME}_server_node ${catkin_LIBRARIES} )
+# 
+# add_executable(${PROJECT_NAME}_client_node src/client_node.cpp)
+# target_link_libraries(${PROJECT_NAME}_client_node ${catkin_LIBRARIES} )
+# 
+# add_executable(test_serializer test/test_serializer.cpp)
+# target_link_libraries(test_serializer ${catkin_LIBRARIES} )
+# 
+# # add_executable(test_server test/test_server.cpp)
+# # target_link_libraries(test_server ${catkin_LIBRARIES} )
 
 add_executable(test_rosmsg_serializer test/test_rosmsg_serializer.cpp)
 target_link_libraries(test_rosmsg_serializer ${catkin_LIBRARIES} )

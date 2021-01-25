@@ -7,36 +7,36 @@ namespace test
 {
     using parsable_message = RosMessageJsonSerializer::supported_message;
 
-    void point_correctly_serializes()
-    {
-        auto serializer = RosMessageJsonSerializer();
-        auto msg = geometry_msgs::Point();  
-
-        msg.x = 1;
-        msg.y = 2;
-        msg.z = 3;
-
-        
-
-        const auto data = serializer.Serialize(parsable_message(msg));
-
-        assert(contains_keyvalue_pair(data, "x", msg.x));
-        assert(contains_keyvalue_pair(data, "y", msg.y));
-        assert(contains_keyvalue_pair(data, "z", msg.z));
-    }
-
-    void point_correctly_deserializes()
-    {
-        auto serializer = RosMessageJsonSerializer();
-        auto msg = geometry_msgs::Point();  
-
-        msg.x = 1;
-        msg.y = 2;
-        msg.z = 3;
-
-        const auto data = serializer.Deserialize(serializer.Serialize(msg));
-        //assert(data == msg);
-    }
+    // void point_correctly_serializes()
+    // {
+    //     auto serializer = RosMessageJsonSerializer();
+    //     auto msg = geometry_msgs::Point();  
+// 
+    //     msg.x = 1;
+    //     msg.y = 2;
+    //     msg.z = 3;
+// 
+    //     
+// 
+    //     const auto data = serializer.Serialize(parsable_message(msg));
+// 
+    //     assert(contains_keyvalue_pair(data, "x", msg.x));
+    //     assert(contains_keyvalue_pair(data, "y", msg.y));
+    //     assert(contains_keyvalue_pair(data, "z", msg.z));
+    // }
+// 
+    // void point_correctly_deserializes()
+    // {
+    //     auto serializer = RosMessageJsonSerializer();
+    //     auto msg = geometry_msgs::Point();  
+// 
+    //     msg.x = 1;
+    //     msg.y = 2;
+    //     msg.z = 3;
+// 
+    //     const auto data = serializer.Deserialize(serializer.Serialize(msg));
+    //     //assert(data == msg);
+    // }
 
 //    void header_correctly_serializes()
 //    {
@@ -115,8 +115,8 @@ namespace test
 
 int main(int argc, char const *argv[])
 {
-    test::point_correctly_serializes();
-    test::point_correctly_deserializes();
+    // test::point_correctly_serializes();
+    // test::point_correctly_deserializes();
     //test::header_correctly_serializes();
     //test::vector3_correctly_serializes();
     //test::pose_with_covariance_correctly_deSerializes();
